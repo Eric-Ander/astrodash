@@ -1,0 +1,20 @@
+{
+  "id": "moon-phase",
+  "name": "Moon Phase",
+  "description": "Current moon phase, illumination, and observation impact",
+  "version": "1.0.0",
+  "icon": "🌙",
+  "category": "astronomy",
+  "defaultEnabled": true,
+  "defaultPosition": 2,
+  "requiresAuth": false,
+  "requiresLocation": true,
+  "dataSource": {
+    "endpoint": "/data",
+    "refreshInterval": 3600
+  },
+  "size": {
+    "default": "medium",
+    "options": ["small", "medium", "large"]
+  }
+}
