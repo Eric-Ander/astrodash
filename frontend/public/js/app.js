@@ -219,6 +219,15 @@ class AstroWeather {
         } else {
             titleEl.textContent = "Tonight's 3-Hour Forecast";
         }
+        // Show dashboard cards
+        if (window.dashboardCards) {
+            dashboardCards.show({
+                name: data.location.name,
+                lat: data.location.coordinates.lat,
+                lon: data.location.coordinates.lon
+            }, data);
+        }
+    }
     }
 
     displayMoonPhase(moon) {
