@@ -9,6 +9,20 @@
     <!-- i18next for internationalization -->
     <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@2.4.2/i18nextHttpBackend.min.js"></script>
+    <!-- Lit for card web components -->
+    <script type="importmap">
+    {
+      "imports": {
+        "lit": "https://cdn.jsdelivr.net/npm/lit@3.2.1/+esm",
+        "lit/": "https://cdn.jsdelivr.net/npm/lit@3.2.1/",
+        "lit-html": "https://cdn.jsdelivr.net/npm/lit-html@3.2.1/+esm",
+        "lit-html/": "https://cdn.jsdelivr.net/npm/lit-html@3.2.1/",
+        "lit-element/": "https://cdn.jsdelivr.net/npm/lit-element@4.1.1/",
+        "@lit/reactive-element": "https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.0.4/+esm",
+        "@lit/reactive-element/": "https://cdn.jsdelivr.net/npm/@lit/reactive-element@2.0.4/"
+      }
+    }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -128,7 +142,10 @@
         <!-- Error Message -->
         <div id="errorMessage" class="error-message hidden"></div>
 
-        <!-- Results Section -->
+        <!-- Card Dashboard (plugin cards render here) -->
+        <div id="cardDashboard" class="card-dashboard hidden"></div>
+
+        <!-- Results Section (legacy - will be replaced by cards in Phase 4) -->
         <section id="resultsSection" class="results-section hidden">
             <!-- Location Info -->
             <div class="location-info">
@@ -337,5 +354,7 @@
     <script src="/js/auth.js"></script>
     <script src="/js/auth-ui.js"></script>
     <script src="/js/app.js"></script>
+    <!-- Card system (ES modules) -->
+    <script type="module" src="/js/card-manager.js"></script>
 </body>
 </html>

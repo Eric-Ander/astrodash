@@ -943,6 +943,22 @@ body {
     font-size: 0.9rem;
 }
 
+/* Card Dashboard Grid */
+.card-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.card-dashboard:empty {
+    display: none;
+}
+
+.card-load-error {
+    min-height: 100px;
+}
+
 /* Utility Classes */
 .hidden {
     display: none !important;
@@ -950,6 +966,11 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .card-dashboard {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
     .container {
         padding: 10px;
     }

@@ -3,6 +3,7 @@ const router = express.Router();
 const weatherController = require('../controllers/weatherController');
 const eventsController = require('../controllers/eventsController');
 const authController = require('../controllers/authController');
+const cardPreferencesController = require('../controllers/cardPreferencesController');
 const { authenticateToken } = require('../middleware/auth');
 
 // Authentication routes
@@ -28,6 +29,11 @@ router.get('/weather/forecast/multiday', weatherController.getMultiDayForecast.b
 router.get('/events', eventsController.getEvents.bind(eventsController));
 router.get('/events/iss', eventsController.getISSPasses.bind(eventsController));
 router.get('/events/meteors', eventsController.getMeteorShowers.bind(eventsController));
+
+// Card preferences routes (protected)
+router.get('/cards/preferences', authenticateToken, cardPreferencesController.getPreferences.bind(cardPreferencesController));
+router.put('/cards/preferences', authenticateToken, cardPreferencesController.savePreferences.bind(cardPreferencesController));
+router.patch('/cards/preferences/:cardId', authenticateToken, cardPreferencesController.updateCardPreference.bind(cardPreferencesController));
 
 // Health check
 router.get('/health', weatherController.healthCheck.bind(weatherController));

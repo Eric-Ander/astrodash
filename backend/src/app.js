@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const path = require('path');
 const apiRoutes = require('./routes/api');
+const cardLoader = require('./card-loader');
 const { initializeScheduler } = require('./services/scheduler');
 
 const app = express();
@@ -33,6 +34,10 @@ app.use(express.static(path.join(__dirname, '../../frontend/public')));
 
 // API routes
 app.use('/api', apiRoutes);
+
+// Discover and mount card plugins
+cardLoader.discover();
+cardLoader.mount(app);
 
 // Serve index.html for root path
 app.get('/', (req, res) => {

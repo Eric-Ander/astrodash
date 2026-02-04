@@ -88,6 +88,28 @@ const initDb = () => {
     ON saved_locations(notifications_enabled, user_id)
   `);
 
+  // User card preferences table - stores per-user card layout and settings
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS user_card_preferences (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      card_id TEXT NOT NULL,
+      enabled INTEGER DEFAULT 1,
+      position INTEGER DEFAULT 0,
+      settings TEXT DEFAULT '{}',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      UNIQUE(user_id, card_id)
+    )
+  `);
+
+  // Index for efficient card preference lookups
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_user_card_prefs
+    ON user_card_preferences(user_id, enabled)
+  `);
+
   console.log('Database initialized successfully');
 };
 
