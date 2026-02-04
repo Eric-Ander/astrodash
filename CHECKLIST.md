@@ -5,7 +5,7 @@ Use this checklist to track your progress. Check off each item as you complete i
 ## ✅ Phase 1: Initial Setup (Day 1)
 
 ### Prerequisites
-- [ ] Git installed on your computer
+- [x] Git installed on your computer
 - [ ] Docker installed on your computer  
 - [ ] GitHub account created
 - [ ] Text editor installed (VS Code, Sublime, or similar)
