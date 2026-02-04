@@ -219,13 +219,19 @@ class AstroWeather {
         } else {
             titleEl.textContent = "Tonight's 3-Hour Forecast";
         }
-        // Show dashboard cards
+ // Show dashboard cards
+        console.log('Attempting to show dashboard cards');
+        console.log('dashboardCards exists:', !!window.dashboardCards);
+        console.log('data.location:', data.location);
+        
         if (window.dashboardCards) {
+            console.log('Calling dashboardCards.show()');
             dashboardCards.show({
                 name: data.location.name,
                 lat: data.location.coordinates.lat,
                 lon: data.location.coordinates.lon
             }, data);
+            console.log('Dashboard show() called');
         }
     }
 
