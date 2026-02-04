@@ -223,5 +223,6 @@ class DashboardCards {
     }
 }
 
-// Initialize dashboard cards
+// Initialize dashboard cards and make it globally accessible
 const dashboardCards = new DashboardCards();
+window.dashboardCards = dashboardCards;
