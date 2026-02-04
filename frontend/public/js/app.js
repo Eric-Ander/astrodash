@@ -228,7 +228,6 @@ class AstroWeather {
             }, data);
         }
     }
-    }
 
     displayMoonPhase(moon) {
         document.getElementById('moonEmoji').textContent = moon.emoji;
