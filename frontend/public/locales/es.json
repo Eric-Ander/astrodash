@@ -1,0 +1,123 @@
+{
+  "header": {
+    "title": "AstroClima",
+    "tagline": "¿Cielos despejados para observar las estrellas esta noche?"
+  },
+  "search": {
+    "cityTab": "Nombre de Ciudad",
+    "coordinatesTab": "Coordenadas",
+    "cityPlaceholder": "Ingrese nombre de ciudad (ej. Madrid, Barcelona, Buenos Aires)",
+    "latitudePlaceholder": "ej. 40.4168",
+    "longitudePlaceholder": "ej. -3.7038",
+    "latitudeLabel": "Latitud",
+    "longitudeLabel": "Longitud",
+    "searchButton": "Buscar",
+    "searchIcon": "🔍"
+  },
+  "loading": {
+    "message": "Obteniendo pronóstico del cielo nocturno..."
+  },
+  "location": {
+    "tonight": "Esta Noche"
+  },
+  "summary": {
+    "overallQuality": "Calidad General",
+    "avgClouds": "Nubosidad Promedio",
+    "bestTime": "Mejor Hora de Observación",
+    "score": "Puntuación"
+  },
+  "moon": {
+    "title": "Fase Lunar Esta Noche",
+    "phase": "Fase",
+    "illumination": "Iluminación",
+    "skyImpact": "Impacto en el Cielo",
+    "loading": "Cargando..."
+  },
+  "bortle": {
+    "title": "Contaminación Lumínica (Escala Bortle)",
+    "rating": "Clasificación",
+    "quality": "Calidad",
+    "limitingMagnitude": "Magnitud Límite",
+    "loading": "Cargando..."
+  },
+  "forecast": {
+    "tonightTitle": "Pronóstico de 3 Horas para Esta Noche",
+    "toggleMultiDay": "Ver Pronóstico de 5 Noches",
+    "toggleTonight": "Ver Solo Esta Noche",
+    "multiDayTitle": "Pronóstico de 5 Noches",
+    "temperature": "Temperatura",
+    "clouds": "Nubes",
+    "visibility": "Visibilidad",
+    "humidity": "Humedad",
+    "wind": "Viento",
+    "rainChance": "Probabilidad de Lluvia"
+  },
+  "events": {
+    "title": "Próximos Eventos Astronómicos",
+    "loading": "Cargando eventos...",
+    "noEvents": "No se encontraron eventos próximos",
+    "issPass": "Paso de la EEI",
+    "time": "Hora",
+    "duration": "Duración",
+    "minutes": "minutos",
+    "peak": "Pico",
+    "daysUntilPeak": "Días Hasta el Pico",
+    "zhr": "THZ",
+    "date": "Fecha",
+    "daysAway": "Días de Distancia",
+    "sunrise": "Amanecer",
+    "sunset": "Atardecer",
+    "astronomicalTwilight": "Crepúsculo Astronómico",
+    "dayLength": "Duración del Día",
+    "hours": "horas",
+    "today": "¡Hoy!",
+    "tomorrow": "Mañana",
+    "inDays": "En {{count}} días"
+  },
+  "legend": {
+    "title": "Leyenda de Puntuación Astronómica",
+    "excellent": "Excelente",
+    "veryGood": "Muy Bueno",
+    "good": "Bueno",
+    "fair": "Aceptable",
+    "poor": "Malo",
+    "veryPoor": "Muy Malo"
+  },
+  "footer": {
+    "copyright": "AstroClima | Datos meteorológicos proporcionados por OpenWeatherMap"
+  },
+  "errors": {
+    "general": "Algo salió mal",
+    "network": "Error de red. Por favor, inténtelo de nuevo.",
+    "notFound": "Ubicación no encontrada"
+  },
+  "quality": {
+    "excellent": "Excelente",
+    "veryGood": "Muy Bueno",
+    "good": "Bueno",
+    "fair": "Aceptable",
+    "poor": "Malo",
+    "veryPoor": "Muy Malo"
+  },
+  "weatherConditions": {
+    "clearSky": "cielo despejado",
+    "fewClouds": "pocas nubes",
+    "scatteredClouds": "nubes dispersas",
+    "brokenClouds": "nubes rotas",
+    "showerRain": "lluvia ligera",
+    "rain": "lluvia",
+    "thunderstorm": "tormenta",
+    "snow": "nieve",
+    "mist": "niebla"
+  },
+  "moonPhases": {
+    "New Moon": "Luna Nueva",
+    "Full Moon": "Luna Llena",
+    "Waxing Crescent": "Luna Creciente",
+    "Waxing Gibbous": "Gibosa Creciente",
+    "Waning Crescent": "Luna Menguante",
+    "Waning Gibbous": "Gibosa Menguante",
+    "First Quarter": "Cuarto Creciente",
+    "Last Quarter": "Cuarto Menguante"
+  }
+}

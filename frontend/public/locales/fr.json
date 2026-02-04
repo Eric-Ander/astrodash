@@ -1,0 +1,123 @@
+{
+  "header": {
+    "title": "AstroMétéo",
+    "tagline": "Ciel dégagé pour observer les étoiles ce soir?"
+  },
+  "search": {
+    "cityTab": "Nom de Ville",
+    "coordinatesTab": "Coordonnées",
+    "cityPlaceholder": "Entrez le nom de la ville (ex. Paris, Lyon, Marseille)",
+    "latitudePlaceholder": "ex. 48.8566",
+    "longitudePlaceholder": "ex. 2.3522",
+    "latitudeLabel": "Latitude",
+    "longitudeLabel": "Longitude",
+    "searchButton": "Rechercher",
+    "searchIcon": "🔍"
+  },
+  "loading": {
+    "message": "Chargement des prévisions du ciel nocturne..."
+  },
+  "location": {
+    "tonight": "Ce Soir"
+  },
+  "summary": {
+    "overallQuality": "Qualité Générale",
+    "avgClouds": "Couverture Nuageuse Moyenne",
+    "bestTime": "Meilleur Moment d'Observation",
+    "score": "Score"
+  },
+  "moon": {
+    "title": "Phase Lunaire Ce Soir",
+    "phase": "Phase",
+    "illumination": "Illumination",
+    "skyImpact": "Impact sur le Ciel",
+    "loading": "Chargement..."
+  },
+  "bortle": {
+    "title": "Pollution Lumineuse (Échelle Bortle)",
+    "rating": "Classement",
+    "quality": "Qualité",
+    "limitingMagnitude": "Magnitude Limite",
+    "loading": "Chargement..."
+  },
+  "forecast": {
+    "tonightTitle": "Prévisions de 3 Heures pour Ce Soir",
+    "toggleMultiDay": "Voir les Prévisions sur 5 Nuits",
+    "toggleTonight": "Voir Uniquement Ce Soir",
+    "multiDayTitle": "Prévisions sur 5 Nuits",
+    "temperature": "Température",
+    "clouds": "Nuages",
+    "visibility": "Visibilité",
+    "humidity": "Humidité",
+    "wind": "Vent",
+    "rainChance": "Probabilité de Pluie"
+  },
+  "events": {
+    "title": "Événements Astronomiques à Venir",
+    "loading": "Chargement des événements...",
+    "noEvents": "Aucun événement à venir trouvé",
+    "issPass": "Passage de l'ISS",
+    "time": "Heure",
+    "duration": "Durée",
+    "minutes": "minutes",
+    "peak": "Pic",
+    "daysUntilPeak": "Jours Jusqu'au Pic",
+    "zhr": "THZ",
+    "date": "Date",
+    "daysAway": "Jours Restants",
+    "sunrise": "Lever du Soleil",
+    "sunset": "Coucher du Soleil",
+    "astronomicalTwilight": "Crépuscule Astronomique",
+    "dayLength": "Durée du Jour",
+    "hours": "heures",
+    "today": "Aujourd'hui!",
+    "tomorrow": "Demain",
+    "inDays": "Dans {{count}} jours"
+  },
+  "legend": {
+    "title": "Légende du Score Astronomique",
+    "excellent": "Excellent",
+    "veryGood": "Très Bon",
+    "good": "Bon",
+    "fair": "Correct",
+    "poor": "Mauvais",
+    "veryPoor": "Très Mauvais"
+  },
+  "footer": {
+    "copyright": "AstroMétéo | Données météorologiques fournies par OpenWeatherMap"
+  },
+  "errors": {
+    "general": "Quelque chose s'est mal passé",
+    "network": "Erreur réseau. Veuillez réessayer.",
+    "notFound": "Emplacement introuvable"
+  },
+  "quality": {
+    "excellent": "Excellent",
+    "veryGood": "Très Bon",
+    "good": "Bon",
+    "fair": "Correct",
+    "poor": "Mauvais",
+    "veryPoor": "Très Mauvais"
+  },
+  "weatherConditions": {
+    "clearSky": "ciel dégagé",
+    "fewClouds": "quelques nuages",
+    "scatteredClouds": "nuages épars",
+    "brokenClouds": "nuages fragmentés",
+    "showerRain": "averses",
+    "rain": "pluie",
+    "thunderstorm": "orage",
+    "snow": "neige",
+    "mist": "brume"
+  },
+  "moonPhases": {
+    "New Moon": "Nouvelle Lune",
+    "Full Moon": "Pleine Lune",
+    "Waxing Crescent": "Premier Croissant",
+    "Waxing Gibbous": "Lune Gibbeuse Croissante",
+    "Waning Crescent": "Dernier Croissant",
+    "Waning Gibbous": "Lune Gibbeuse Décroissante",
+    "First Quarter": "Premier Quartier",
+    "Last Quarter": "Dernier Quartier"
+  }
+}

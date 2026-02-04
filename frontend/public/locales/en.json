@@ -1,0 +1,123 @@
+{
+  "header": {
+    "title": "AstroWeather",
+    "tagline": "Clear skies for stargazing tonight?"
+  },
+  "search": {
+    "cityTab": "City Name",
+    "coordinatesTab": "Coordinates",
+    "cityPlaceholder": "Enter city name (e.g., London, Tokyo, New York)",
+    "latitudePlaceholder": "e.g., 51.5074",
+    "longitudePlaceholder": "e.g., -0.1278",
+    "latitudeLabel": "Latitude",
+    "longitudeLabel": "Longitude",
+    "searchButton": "Search",
+    "searchIcon": "🔍"
+  },
+  "loading": {
+    "message": "Fetching tonight's sky forecast..."
+  },
+  "location": {
+    "tonight": "Tonight"
+  },
+  "summary": {
+    "overallQuality": "Overall Quality",
+    "avgClouds": "Average Cloud Coverage",
+    "bestTime": "Best Observation Time",
+    "score": "Score"
+  },
+  "moon": {
+    "title": "Moon Phase Tonight",
+    "phase": "Phase",
+    "illumination": "Illumination",
+    "skyImpact": "Sky Impact",
+    "loading": "Loading..."
+  },
+  "bortle": {
+    "title": "Light Pollution (Bortle Scale)",
+    "rating": "Rating",
+    "quality": "Quality",
+    "limitingMagnitude": "Limiting Magnitude",
+    "loading": "Loading..."
+  },
+  "forecast": {
+    "tonightTitle": "Tonight's 3-Hour Forecast",
+    "toggleMultiDay": "View 5-Night Forecast",
+    "toggleTonight": "View Tonight Only",
+    "multiDayTitle": "5-Night Forecast",
+    "temperature": "Temperature",
+    "clouds": "Clouds",
+    "visibility": "Visibility",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "rainChance": "Rain Chance"
+  },
+  "events": {
+    "title": "Upcoming Astronomical Events",
+    "loading": "Loading events...",
+    "noEvents": "No upcoming events found",
+    "issPass": "ISS Pass",
+    "time": "Time",
+    "duration": "Duration",
+    "minutes": "minutes",
+    "peak": "Peak",
+    "daysUntilPeak": "Days Until Peak",
+    "zhr": "ZHR",
+    "date": "Date",
+    "daysAway": "Days Away",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset",
+    "astronomicalTwilight": "Astronomical Twilight",
+    "dayLength": "Day Length",
+    "hours": "hours",
+    "today": "Today!",
+    "tomorrow": "Tomorrow",
+    "inDays": "In {{count}} days"
+  },
+  "legend": {
+    "title": "Astronomy Score Legend",
+    "excellent": "Excellent",
+    "veryGood": "Very Good",
+    "good": "Good",
+    "fair": "Fair",
+    "poor": "Poor",
+    "veryPoor": "Very Poor"
+  },
+  "footer": {
+    "copyright": "AstroWeather | Weather data provided by OpenWeatherMap"
+  },
+  "errors": {
+    "general": "Something went wrong",
+    "network": "Network error. Please try again.",
+    "notFound": "Location not found"
+  },
+  "quality": {
+    "excellent": "Excellent",
+    "veryGood": "Very Good",
+    "good": "Good",
+    "fair": "Fair",
+    "poor": "Poor",
+    "veryPoor": "Very Poor"
+  },
+  "weatherConditions": {
+    "clearSky": "clear sky",
+    "fewClouds": "few clouds",
+    "scatteredClouds": "scattered clouds",
+    "brokenClouds": "broken clouds",
+    "showerRain": "shower rain",
+    "rain": "rain",
+    "thunderstorm": "thunderstorm",
+    "snow": "snow",
+    "mist": "mist"
+  },
+  "moonPhases": {
+    "New Moon": "New Moon",
+    "Full Moon": "Full Moon",
+    "Waxing Crescent": "Waxing Crescent",
+    "Waxing Gibbous": "Waxing Gibbous",
+    "Waning Crescent": "Waning Crescent",
+    "Waning Gibbous": "Waning Gibbous",
+    "First Quarter": "First Quarter",
+    "Last Quarter": "Last Quarter"
+  }
+}

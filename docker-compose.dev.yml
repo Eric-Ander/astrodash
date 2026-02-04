@@ -1,0 +1,22 @@
+version: '3.8'
+
+# Development environment
+# Use with: docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+services:
+  astrodash:
+    container_name: astrodash-dev
+    ports:
+      - "3002:3000"  # Development runs on port 3002
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_PATH=/app/data/astrodash.db
+      - ENABLE_DEBUG=true
+      - LOG_LEVEL=debug
+    volumes:
+      - ./backend/data/dev:/app/data  # Separate dev database
+      - ./backend/src:/app/src:ro  # Hot reload backend code
+      - ./frontend/public:/app/frontend/public:ro
+      - ./cards:/app/cards:ro
+    command: npm run dev  # Use nodemon for auto-restart

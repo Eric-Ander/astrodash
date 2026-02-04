@@ -1,0 +1,123 @@
+{
+  "header": {
+    "title": "AstroWetter",
+    "tagline": "Klarer Himmel zum Sterneschauen heute Nacht?"
+  },
+  "search": {
+    "cityTab": "Stadtname",
+    "coordinatesTab": "Koordinaten",
+    "cityPlaceholder": "Stadtnamen eingeben (z.B. Berlin, München, Wien)",
+    "latitudePlaceholder": "z.B. 52.5200",
+    "longitudePlaceholder": "z.B. 13.4050",
+    "latitudeLabel": "Breitengrad",
+    "longitudeLabel": "Längengrad",
+    "searchButton": "Suchen",
+    "searchIcon": "🔍"
+  },
+  "loading": {
+    "message": "Himmelsprognose für heute Nacht wird geladen..."
+  },
+  "location": {
+    "tonight": "Heute Nacht"
+  },
+  "summary": {
+    "overallQuality": "Gesamtqualität",
+    "avgClouds": "Durchschn. Bewölkung",
+    "bestTime": "Beste Beobachtungszeit",
+    "score": "Bewertung"
+  },
+  "moon": {
+    "title": "Mondphase Heute Nacht",
+    "phase": "Phase",
+    "illumination": "Beleuchtung",
+    "skyImpact": "Himmelseinfluss",
+    "loading": "Lädt..."
+  },
+  "bortle": {
+    "title": "Lichtverschmutzung (Bortle-Skala)",
+    "rating": "Bewertung",
+    "quality": "Qualität",
+    "limitingMagnitude": "Grenzgröße",
+    "loading": "Lädt..."
+  },
+  "forecast": {
+    "tonightTitle": "3-Stunden-Vorhersage für Heute Nacht",
+    "toggleMultiDay": "5-Nächte-Vorhersage anzeigen",
+    "toggleTonight": "Nur heute Nacht anzeigen",
+    "multiDayTitle": "5-Nächte-Vorhersage",
+    "temperature": "Temperatur",
+    "clouds": "Wolken",
+    "visibility": "Sichtweite",
+    "humidity": "Luftfeuchtigkeit",
+    "wind": "Wind",
+    "rainChance": "Regenwahrscheinlichkeit"
+  },
+  "events": {
+    "title": "Bevorstehende Astronomische Ereignisse",
+    "loading": "Ereignisse werden geladen...",
+    "noEvents": "Keine bevorstehenden Ereignisse gefunden",
+    "issPass": "ISS-Überflug",
+    "time": "Zeit",
+    "duration": "Dauer",
+    "minutes": "Minuten",
+    "peak": "Maximum",
+    "daysUntilPeak": "Tage bis Maximum",
+    "zhr": "ZHR",
+    "date": "Datum",
+    "daysAway": "Tage entfernt",
+    "sunrise": "Sonnenaufgang",
+    "sunset": "Sonnenuntergang",
+    "astronomicalTwilight": "Astronomische Dämmerung",
+    "dayLength": "Tageslänge",
+    "hours": "Stunden",
+    "today": "Heute!",
+    "tomorrow": "Morgen",
+    "inDays": "In {{count}} Tagen"
+  },
+  "legend": {
+    "title": "Astronomie-Bewertung Legende",
+    "excellent": "Ausgezeichnet",
+    "veryGood": "Sehr Gut",
+    "good": "Gut",
+    "fair": "Ordentlich",
+    "poor": "Schlecht",
+    "veryPoor": "Sehr Schlecht"
+  },
+  "footer": {
+    "copyright": "AstroWetter | Wetterdaten bereitgestellt von OpenWeatherMap"
+  },
+  "errors": {
+    "general": "Etwas ist schief gelaufen",
+    "network": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
+    "notFound": "Standort nicht gefunden"
+  },
+  "quality": {
+    "excellent": "Ausgezeichnet",
+    "veryGood": "Sehr Gut",
+    "good": "Gut",
+    "fair": "Ordentlich",
+    "poor": "Schlecht",
+    "veryPoor": "Sehr Schlecht"
+  },
+  "weatherConditions": {
+    "clearSky": "klarer Himmel",
+    "fewClouds": "leicht bewölkt",
+    "scatteredClouds": "vereinzelt bewölkt",
+    "brokenClouds": "überwiegend bewölkt",
+    "showerRain": "Regenschauer",
+    "rain": "Regen",
+    "thunderstorm": "Gewitter",
+    "snow": "Schnee",
+    "mist": "Nebel"
+  },
+  "moonPhases": {
+    "New Moon": "Neumond",
+    "Full Moon": "Vollmond",
+    "Waxing Crescent": "Zunehmende Sichel",
+    "Waxing Gibbous": "Zunehmender Mond",
+    "Waning Crescent": "Abnehmende Sichel",
+    "Waning Gibbous": "Abnehmender Mond",
+    "First Quarter": "Erstes Viertel",
+    "Last Quarter": "Letztes Viertel"
+  }
+}

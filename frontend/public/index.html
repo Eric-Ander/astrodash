@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AstroWeather - Astronomical weather forecasting for stargazers">
+    <title>AstroWeather - Tonight's Sky Forecast</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- i18next for internationalization -->
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@2.4.2/i18nextHttpBackend.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-controls">
+                    <div class="language-selector">
+                        <select id="languageSelect" class="language-select">
+                            <option value="en">English</option>
+                            <option value="de">Deutsch</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    
+                    <!-- User Menu (shown when logged in) -->
+                    <div id="userMenu" class="user-menu hidden">
+                        <button class="user-menu-button" id="userMenuButton">
+                            <span class="user-icon">👤</span>
+                            <span id="userName">User</span>
+                        </button>
+                        <div class="user-dropdown hidden" id="userDropdown">
+                            <div class="dropdown-item" id="savedLocationsBtn">
+                                <span>📍</span> Saved Locations
+                            </div>
+                            <div class="dropdown-item" id="logoutBtn">
+                                <span>🚪</span> Logout
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Login Button (shown when not logged in) -->
+                    <button id="loginButton" class="login-button">
+                        <span>🔐</span> Login
+                    </button>
+                </div>
+                
+                <h1 class="logo">
+                    <span class="star-icon">✨</span>
+                    <span>AstroWeather</span>
+                </h1>
+                <p class="tagline">Clear skies for stargazing tonight?</p>
+            </div>
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-container">
+                <div class="search-tabs">
+                    <button class="tab-button active" data-tab="city" data-i18n="search.cityTab">City Name</button>
+                    <button class="tab-button" data-tab="coordinates" data-i18n="search.coordinatesTab">Coordinates</button>
+                </div>
+
+                <!-- City Search Form -->
+                <form id="cityForm" class="search-form active">
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="cityInput" 
+                            data-i18n="[placeholder]search.cityPlaceholder"
+                            placeholder="Enter city name (e.g., London, Tokyo, New York)"
+                            class="search-input"
+                            autocomplete="off"
+                        >
+                        <button type="submit" class="search-button">
+                            <span class="search-icon">🔍</span>
+                            <span data-i18n="search.searchButton">Search</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Coordinates Search Form -->
+                <form id="coordinatesForm" class="search-form">
+                    <div class="coordinates-inputs">
+                        <div class="input-group">
+                            <label for="latInput" data-i18n="search.latitudeLabel">Latitude</label>
+                            <input 
+                                type="number" 
+                                id="latInput" 
+                                data-i18n="[placeholder]search.latitudePlaceholder"
+                                placeholder="e.g., 51.5074"
+                                step="0.0001"
+                                min="-90"
+                                max="90"
+                                class="search-input"
+                            >
+                        </div>
+                        <div class="input-group">
+                            <label for="lonInput" data-i18n="search.longitudeLabel">Longitude</label>
+                            <input 
+                                type="number" 
+                                id="lonInput" 
+                                data-i18n="[placeholder]search.longitudePlaceholder"
+                                placeholder="e.g., -0.1278"
+                                step="0.0001"
+                                min="-180"
+                                max="180"
+                                class="search-input"
+                            >
+                        </div>
+                    </div>
+                    <button type="submit" class="search-button">
+                        <span class="search-icon">🔍</span>
+                        <span data-i18n="search.searchButton">Search</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator hidden">
+            <div class="spinner"></div>
+            <p data-i18n="loading.message">Fetching tonight's sky forecast...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <!-- Results Section -->
+        <section id="resultsSection" class="results-section hidden">
+            <!-- Location Info -->
+            <div class="location-info">
+                <h2 id="locationName"></h2>
+                <p id="tonightRange"></p>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="summary-card">
+                <div class="summary-item">
+                    <h3 data-i18n="summary.overallQuality">Overall Quality</h3>
+                    <div class="quality-badge" id="overallQuality"></div>
+                    <p class="summary-score" id="averageScore"></p>
+                </div>
+                <div class="summary-item">
+                    <h3 data-i18n="summary.avgClouds">Average Cloud Coverage</h3>
+                    <p class="summary-value" id="averageClouds"></p>
+                </div>
+                <div class="summary-item best-time">
+                    <h3 data-i18n="summary.bestTime">Best Observation Time</h3>
+                    <p class="summary-value" id="bestTime"></p>
+                    <p class="summary-score" id="bestTimeScore"></p>
+                </div>
+            </div>
+
+            <!-- Moon Phase Card -->
+            <div class="moon-card">
+                <h3 class="moon-title" data-i18n="moon.title">Moon Phase Tonight</h3>
+                <div class="moon-content">
+                    <div class="moon-icon" id="moonEmoji">🌙</div>
+                    <div class="moon-details">
+                        <div class="moon-phase">
+                            <span class="moon-label" data-i18n="moon.phase">Phase:</span>
+                            <span class="moon-value" id="moonPhase" data-i18n="moon.loading">Loading...</span>
+                        </div>
+                        <div class="moon-illumination">
+                            <span class="moon-label" data-i18n="moon.illumination">Illumination:</span>
+                            <span class="moon-value" id="moonIllumination">0%</span>
+                        </div>
+                        <div class="moon-impact">
+                            <span class="moon-label" data-i18n="moon.skyImpact">Sky Impact:</span>
+                            <span class="moon-value" id="moonImpact" data-i18n="moon.loading">Loading...</span>
+                        </div>
+                        <div class="moon-recommendation">
+                            <p id="moonRecommendation"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hourly Forecast -->
+            <div class="forecast-container">
+                <div class="forecast-header">
+                    <h3 class="forecast-title" id="forecastTitle" data-i18n="forecast.tonightTitle">Tonight's 3-Hour Forecast</h3>
+                    <button id="toggleMultiDay" class="toggle-button" data-i18n="forecast.toggleMultiDay">
+                        View 5-Night Forecast
+                    </button>
+                </div>
+                <div id="hourlyForecast" class="hourly-forecast"></div>
+                <div id="multiDayForecast" class="multi-day-forecast hidden"></div>
+            </div>
+
+            <!-- Light Pollution / Bortle Scale Card -->
+            <div class="bortle-card">
+                <h3 class="bortle-title" data-i18n="bortle.title">Light Pollution (Bortle Scale)</h3>
+                <div class="bortle-content">
+                    <div class="bortle-badge" id="bortleBadge">
+                        <div class="bortle-class" id="bortleClass">-</div>
+                        <div class="bortle-emoji" id="bortleEmoji">🌌</div>
+                    </div>
+                    <div class="bortle-details">
+                        <div class="bortle-name">
+                            <span class="bortle-label" data-i18n="bortle.rating">Rating:</span>
+                            <span class="bortle-value" id="bortleName" data-i18n="bortle.loading">Loading...</span>
+                        </div>
+                        <div class="bortle-quality">
+                            <span class="bortle-label" data-i18n="bortle.quality">Quality:</span>
+                            <span class="bortle-value" id="bortleQuality">-</span>
+                        </div>
+                        <div class="bortle-magnitude">
+                            <span class="bortle-label" data-i18n="bortle.limitingMagnitude">Limiting Magnitude:</span>
+                            <span class="bortle-value" id="bortleMagnitude">-</span>
+                        </div>
+                        <div class="bortle-description">
+                            <p id="bortleDescription"></p>
+                        </div>
+                        <div class="bortle-recommendation">
+                            <p id="bortleRecommendation"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Astronomical Events -->
+            <div class="events-container">
+                <h3 class="events-title" data-i18n="events.title">🌠 Upcoming Astronomical Events</h3>
+                <div id="astronomicalEvents" class="events-grid">
+                    <div class="events-loading" data-i18n="events.loading">Loading events...</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <h4>Astronomy Score Legend</h4>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #00ff00;"></span>
+                        <span>90-100: Excellent</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #7fff00;"></span>
+                        <span>75-89: Very Good</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #ffff00;"></span>
+                        <span>60-74: Good</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #ffa500;"></span>
+                        <span>45-59: Fair</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #ff6600;"></span>
+                        <span>30-44: Poor</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #ff0000;"></span>
+                        <span>0-29: Very Poor</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 AstroWeather | Weather data provided by OpenWeatherMap</p>
+        </footer>
+    </div>
+
+    <!-- Login/Register Modal -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="modal-close" id="closeAuthModal">&times;</span>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="register">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form active">
+                <h2>Login to AstroWeather</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <div class="error-message hidden" id="loginError"></div>
+                <button class="auth-submit-btn" id="loginSubmitBtn">Login</button>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form">
+                <h2>Create Account</h2>
+                <div class="form-group">
+                    <label for="registerName">Name (optional)</label>
+                    <input type="text" id="registerName" placeholder="Your Name">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" placeholder="••••••••" required>
+                    <small>At least 6 characters</small>
+                </div>
+                <div class="error-message hidden" id="registerError"></div>
+                <button class="auth-submit-btn" id="registerSubmitBtn">Create Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Saved Locations Modal -->
+    <div id="savedLocationsModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="modal-close" id="closeSavedLocationsModal">&times;</span>
+            <h2>📍 Saved Locations</h2>
+            <div id="savedLocationsList" class="saved-locations-list">
+                <div class="loading">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Current Location Button (shown after search) -->
+    <div id="saveLocationContainer" class="save-location-container hidden">
+        <button id="saveCurrentLocationBtn" class="save-location-btn">
+            ⭐ Save This Location
+        </button>
+    </div>
+
+    <script src="/js/i18n.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/auth-ui.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
