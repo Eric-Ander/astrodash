@@ -4,7 +4,7 @@ version: '3.8'
 # Use with: docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d
 
 services:
-  astrodash:
+  astroweather:
     container_name: astrodash-staging
     ports:
       - "3001:3000"  # Staging runs on port 3001
