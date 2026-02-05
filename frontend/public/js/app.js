@@ -144,6 +144,11 @@ class AstroWeather {
             const data = await response.json();
             this.displayResults(data);
             this.hideLoading();
+
+            // Store resolved coordinates (needed for card system when searching by city)
+            this.currentLat = data.location.coordinates.lat;
+            this.currentLon = data.location.coordinates.lon;
+
             this.showResults();
 
             // Notify authUI about current location for save functionality
