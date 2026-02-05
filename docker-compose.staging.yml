@@ -6,8 +6,8 @@ version: '3.8'
 services:
   astroweather:
     container_name: astrodash-staging
-    ports:
-      - "3001:3000"  # Staging runs on port 3001
+    ports: !override
+      - "3001:3000"  # Staging runs on port 3001 (override replaces base ports)
     environment:
       - NODE_ENV=staging
       - PORT=3000
