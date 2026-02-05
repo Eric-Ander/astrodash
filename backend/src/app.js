@@ -1,4 +1,9 @@
 require('dotenv').config();
+
+// Expose the backend src root so card plugins can locate shared services
+// in both local dev and Docker environments
+global.appRoot = __dirname;
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');

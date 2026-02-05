@@ -1,6 +1,7 @@
 const express = require('express');
+const path = require('path');
 const router = express.Router();
-const moonPhaseService = require('../../../backend/src/services/moonPhaseService');
+const moonPhaseService = require(path.join(global.appRoot, 'services', 'moonPhaseService'));
 
 /**
  * GET /api/cards/moon-phase/data
