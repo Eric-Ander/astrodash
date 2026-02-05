@@ -4,6 +4,17 @@ import { BaseCard } from '/js/base-card.js';
 class LightPollutionCard extends BaseCard {
   static get cardStyles() {
     return css`
+      .location-name {
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #eee;
+        margin-bottom: 16px;
+        padding: 8px 12px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+      }
+
       .bortle-display {
         display: flex;
         flex-direction: column;
@@ -149,8 +160,13 @@ class LightPollutionCard extends BaseCard {
     }
 
     const colors = this.getScaleColors();
+    const locationName = this.location?.name || d.nearest_city || '';
 
     return html`
+      ${locationName
+        ? html`<div class="location-name">${locationName}</div>`
+        : ''}
+
       <div class="bortle-display">
         <div class="bortle-circle" style="background: ${d.color}">
           <span class="bortle-number">${d.bortle_class}</span>

@@ -5,6 +5,8 @@ class HourlyForecastCard extends BaseCard {
   static properties = {
     ...BaseCard.properties,
     _multiDay: { type: Boolean, state: true },
+    _expandedHours: { type: Object, state: true },
+    _expandedNights: { type: Object, state: true },
   };
 
   static get cardStyles() {
@@ -12,193 +14,283 @@ class HourlyForecastCard extends BaseCard {
       .forecast-controls {
         display: flex;
         justify-content: flex-end;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
       }
 
       .toggle-btn {
-        padding: 8px 16px;
+        padding: 6px 14px;
         background: #e94560;
         color: white;
         border: none;
         border-radius: 8px;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
       }
 
       .toggle-btn:hover {
         background: #d63651;
-        transform: translateY(-2px);
       }
 
-      .hour-list {
-        display: grid;
-        gap: 12px;
-      }
-
-      .hour-item {
-        background: #0f3460;
-        padding: 16px;
+      /* ── Compact hour rows ── */
+      .hour-table {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        background: rgba(0, 0, 0, 0.15);
         border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .hour-row {
         display: grid;
-        grid-template-columns: 80px 1fr 80px;
-        gap: 16px;
+        grid-template-columns: 54px 32px 1fr 44px;
+        gap: 8px;
         align-items: center;
-        border-left: 4px solid transparent;
-        transition: all 0.3s ease;
+        padding: 8px 12px;
+        background: #0f3460;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s ease;
+        border-left: 3px solid transparent;
       }
 
-      .hour-item:hover {
-        transform: translateX(4px);
+      .hour-row:hover {
+        background: #133a6a;
       }
 
-      .hour-time {
-        text-align: center;
-      }
-
-      .hour-time .time {
-        font-size: 1.2rem;
+      .hour-row .time {
+        font-size: 0.85rem;
         font-weight: 700;
         color: #eee;
       }
 
-      .hour-time .icon {
-        font-size: 1.8rem;
-        margin-top: 4px;
+      .hour-row .icon {
+        font-size: 1.1rem;
+        text-align: center;
       }
 
-      .hour-details {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 10px;
-      }
-
-      .detail {
+      .hour-row .conditions {
         display: flex;
-        flex-direction: column;
-      }
-
-      .detail-label {
-        font-size: 0.75rem;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.8rem;
         color: #ccc;
+        overflow: hidden;
       }
 
-      .detail-value {
-        font-size: 1rem;
-        font-weight: 600;
-        color: #eee;
+      .cond-item {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        white-space: nowrap;
       }
 
-      .score-circle {
-        width: 60px;
-        height: 60px;
+      .cond-label {
+        color: #999;
+        font-size: 0.7rem;
+      }
+
+      .score-badge {
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto;
-        font-size: 1.2rem;
+        font-size: 0.8rem;
         font-weight: 700;
         color: white;
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        flex-shrink: 0;
       }
 
-      .score-label {
+      /* ── Expanded detail panel ── */
+      .hour-detail {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 10px 12px 12px;
+        background: #0a2a50;
+        animation: slideDown 0.15s ease-out;
+      }
+
+      @keyframes slideDown {
+        from { opacity: 0; max-height: 0; }
+        to { opacity: 1; max-height: 200px; }
+      }
+
+      .detail-cell {
         text-align: center;
-        font-size: 0.8rem;
-        color: #ccc;
-        margin-top: 4px;
       }
 
-      /* Multi-day styles */
+      .detail-cell .label {
+        font-size: 0.65rem;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .detail-cell .value {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #eee;
+        margin-top: 2px;
+      }
+
+      /* ── Multi-day night cards ── */
+      .nights-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
       .night-card {
         background: #0f3460;
-        padding: 16px;
         border-radius: 8px;
-        margin-bottom: 20px;
+        overflow: hidden;
         border-left: 4px solid #e94560;
       }
 
       .night-header {
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 12px;
         align-items: center;
-        margin-bottom: 12px;
-        padding-bottom: 12px;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        padding: 12px 16px;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s ease;
+      }
+
+      .night-header:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .night-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
       }
 
       .night-date {
-        font-size: 1.2rem;
+        font-size: 0.95rem;
         font-weight: 700;
         color: #00d4ff;
+      }
+
+      .night-meta {
+        font-size: 0.75rem;
+        color: #aaa;
+      }
+
+      .night-score {
+        text-align: center;
+      }
+
+      .night-score-value {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #eee;
+      }
+
+      .night-score-label {
+        font-size: 0.65rem;
+        color: #aaa;
       }
 
       .night-moon {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
       }
 
       .night-moon-emoji {
-        font-size: 1.8rem;
+        font-size: 1.4rem;
       }
 
       .night-moon-info {
-        font-size: 0.85rem;
-        color: #ccc;
-      }
-
-      .night-summary {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 12px;
-        margin-bottom: 12px;
-        padding: 12px;
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 8px;
-      }
-
-      .night-stat {
-        text-align: center;
-      }
-
-      .night-stat-label {
         font-size: 0.75rem;
         color: #ccc;
+        line-height: 1.3;
       }
 
-      .night-stat-value {
-        font-size: 1.1rem;
-        font-weight: 700;
+      .night-expand-icon {
+        font-size: 0.7rem;
+        color: #888;
+        transition: transform 0.2s ease;
+      }
+
+      .night-expand-icon.open {
+        transform: rotate(180deg);
+      }
+
+      .night-body {
+        padding: 0 12px 12px;
+      }
+
+      .night-summary-bar {
+        display: flex;
+        gap: 16px;
+        padding: 8px 12px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+        margin-bottom: 8px;
+        font-size: 0.75rem;
+        color: #ccc;
+        flex-wrap: wrap;
+      }
+
+      .night-summary-bar .stat {
+        display: flex;
+        gap: 4px;
+      }
+
+      .night-summary-bar .stat-label {
+        color: #888;
+      }
+
+      .night-summary-bar .stat-value {
         color: #eee;
+        font-weight: 600;
       }
 
-      @media (max-width: 768px) {
-        .hour-item {
-          grid-template-columns: 1fr;
-          gap: 12px;
+      @media (max-width: 600px) {
+        .hour-row {
+          grid-template-columns: 48px 28px 1fr 36px;
+          gap: 6px;
+          padding: 7px 8px;
         }
 
-        .hour-time {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
+        .hour-row .time {
+          font-size: 0.8rem;
         }
 
-        .hour-details {
-          grid-template-columns: 1fr 1fr;
-        }
-
-        .detail {
-          text-align: center;
-        }
-
-        .score-circle {
-          width: 50px;
-          height: 50px;
+        .hour-row .icon {
           font-size: 1rem;
+        }
+
+        .cond-item {
+          font-size: 0.75rem;
+        }
+
+        .score-badge {
+          width: 32px;
+          height: 32px;
+          font-size: 0.75rem;
+        }
+
+        .hour-detail {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .night-header {
+          grid-template-columns: 1fr auto;
+          gap: 8px;
+        }
+
+        .night-moon {
+          display: none;
         }
       }
     `;
@@ -207,6 +299,8 @@ class HourlyForecastCard extends BaseCard {
   constructor() {
     super();
     this._multiDay = false;
+    this._expandedHours = new Set();
+    this._expandedNights = new Set();
   }
 
   getWeatherEmoji(iconCode) {
@@ -233,88 +327,129 @@ class HourlyForecastCard extends BaseCard {
 
   toggleMultiDay() {
     this._multiDay = !this._multiDay;
+    this._expandedHours = new Set();
+    this._expandedNights = new Set();
     this.loadData();
   }
 
-  renderHourItem(hour) {
+  toggleHour(key) {
+    const next = new Set(this._expandedHours);
+    if (next.has(key)) {
+      next.delete(key);
+    } else {
+      next.add(key);
+    }
+    this._expandedHours = next;
+  }
+
+  toggleNight(index) {
+    const next = new Set(this._expandedNights);
+    if (next.has(index)) {
+      next.delete(index);
+    } else {
+      next.add(index);
+    }
+    this._expandedNights = next;
+  }
+
+  renderHourRow(hour, key) {
+    const expanded = this._expandedHours.has(key);
     return html`
-      <div class="hour-item" style="border-left-color: ${hour.score_color}">
-        <div class="hour-time">
-          <div class="time">${hour.time}</div>
-          <div class="icon">${this.getWeatherEmoji(hour.weather?.icon)}</div>
-        </div>
-        <div class="hour-details">
-          <div class="detail">
-            <span class="detail-label">Temp</span>
-            <span class="detail-value">${hour.temperature?.current}°C</span>
-          </div>
-          <div class="detail">
-            <span class="detail-label">Clouds</span>
-            <span class="detail-value">${hour.clouds}%</span>
-          </div>
-          <div class="detail">
-            <span class="detail-label">Visibility</span>
-            <span class="detail-value">${hour.visibility_km} km</span>
-          </div>
-          <div class="detail">
-            <span class="detail-label">Humidity</span>
-            <span class="detail-value">${hour.humidity}%</span>
-          </div>
-          <div class="detail">
-            <span class="detail-label">Wind</span>
-            <span class="detail-value">${hour.wind_speed} m/s</span>
-          </div>
-          <div class="detail">
-            <span class="detail-label">Rain</span>
-            <span class="detail-value">${hour.precipitation_probability}%</span>
-          </div>
-        </div>
-        <div>
-          <div class="score-circle" style="background: ${hour.score_color}">
-            ${hour.astronomy_score}
-          </div>
-          <div class="score-label">${hour.quality_rating}</div>
+      <div
+        class="hour-row"
+        style="border-left-color: ${hour.score_color}"
+        @click=${() => this.toggleHour(key)}
+      >
+        <span class="time">${hour.time}</span>
+        <span class="icon">${this.getWeatherEmoji(hour.weather?.icon)}</span>
+        <span class="conditions">
+          <span class="cond-item">
+            <span class="cond-label">☁</span> ${hour.clouds}%
+          </span>
+          <span class="cond-item">
+            <span class="cond-label">🌡</span> ${hour.temperature?.current}°
+          </span>
+          <span class="cond-item">
+            <span class="cond-label">💧</span> ${hour.precipitation_probability}%
+          </span>
+        </span>
+        <div class="score-badge" style="background: ${hour.score_color}">
+          ${hour.astronomy_score}
         </div>
       </div>
+      ${expanded
+        ? html`
+            <div class="hour-detail">
+              <div class="detail-cell">
+                <div class="label">Feels Like</div>
+                <div class="value">${hour.temperature?.feels_like}°C</div>
+              </div>
+              <div class="detail-cell">
+                <div class="label">Humidity</div>
+                <div class="value">${hour.humidity}%</div>
+              </div>
+              <div class="detail-cell">
+                <div class="label">Visibility</div>
+                <div class="value">${hour.visibility_km} km</div>
+              </div>
+              <div class="detail-cell">
+                <div class="label">Wind</div>
+                <div class="value">${hour.wind_speed} m/s</div>
+              </div>
+              <div class="detail-cell">
+                <div class="label">Quality</div>
+                <div class="value">${hour.quality_rating}</div>
+              </div>
+              <div class="detail-cell">
+                <div class="label">Weather</div>
+                <div class="value">${hour.weather?.description}</div>
+              </div>
+            </div>
+          `
+        : ''}
     `;
   }
 
-  renderNight(night) {
+  renderNight(night, index) {
+    const expanded = this._expandedNights.has(index);
     const date = new Date(night.date);
     const dateStr = date.toLocaleDateString('en-US', {
-      weekday: 'long', month: 'short', day: 'numeric',
+      weekday: 'short', month: 'short', day: 'numeric',
     });
 
     return html`
       <div class="night-card">
-        <div class="night-header">
-          <div class="night-date">${dateStr}</div>
+        <div class="night-header" @click=${() => this.toggleNight(index)}>
+          <div class="night-left">
+            <div class="night-date">${dateStr}</div>
+            <div class="night-meta">
+              ${night.summary?.overall_quality || 'N/A'}
+              &middot; Best: ${night.best_observation_time?.time || 'N/A'}
+              &middot; Clouds: ${night.summary?.average_cloud_coverage ?? '?'}%
+            </div>
+          </div>
           <div class="night-moon">
             <span class="night-moon-emoji">${night.moon?.emoji}</span>
             <span class="night-moon-info">${night.moon?.phase_name}<br>${night.moon?.illumination}%</span>
           </div>
-        </div>
-        <div class="night-summary">
-          <div class="night-stat">
-            <div class="night-stat-label">Sky Quality</div>
-            <div class="night-stat-value">${night.summary?.overall_quality}</div>
-          </div>
-          <div class="night-stat">
-            <div class="night-stat-label">Avg Score</div>
-            <div class="night-stat-value">${night.summary?.average_score}/100</div>
-          </div>
-          <div class="night-stat">
-            <div class="night-stat-label">Avg Clouds</div>
-            <div class="night-stat-value">${night.summary?.average_cloud_coverage}%</div>
-          </div>
-          <div class="night-stat">
-            <div class="night-stat-label">Best Time</div>
-            <div class="night-stat-value">${night.best_observation_time?.time || 'N/A'}</div>
+          <div class="night-score">
+            <div class="night-score-value">${night.summary?.average_score ?? '?'}</div>
+            <div class="night-score-label">AVG</div>
+            <div class="night-expand-icon ${expanded ? 'open' : ''}">&#9660;</div>
           </div>
         </div>
-        <div class="hour-list">
-          ${night.hourly_forecast?.map((h) => this.renderHourItem(h))}
-        </div>
+
+        ${expanded
+          ? html`
+              <div class="night-body">
+                <div class="hour-table">
+                  ${night.hourly_forecast?.map((h, i) =>
+                    this.renderHourRow(h, `n${index}-${i}`)
+                  )}
+                </div>
+              </div>
+            `
+          : ''}
       </div>
     `;
   }
@@ -328,14 +463,18 @@ class HourlyForecastCard extends BaseCard {
     return html`
       <div class="forecast-controls">
         <button class="toggle-btn" @click=${this.toggleMultiDay}>
-          ${this._multiDay ? 'View Tonight Only' : 'View 5-Night Forecast'}
+          ${this._multiDay ? 'Tonight Only' : '5-Night Forecast'}
         </button>
       </div>
       ${d.mode === 'multiday'
-        ? d.nights?.map((n) => this.renderNight(n))
+        ? html`
+            <div class="nights-list">
+              ${d.nights?.map((n, i) => this.renderNight(n, i))}
+            </div>
+          `
         : html`
-            <div class="hour-list">
-              ${d.hourly_forecast?.map((h) => this.renderHourItem(h))}
+            <div class="hour-table">
+              ${d.hourly_forecast?.map((h, i) => this.renderHourRow(h, `t-${i}`))}
             </div>
           `}
     `;
