@@ -34,8 +34,15 @@ app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Resolve frontend path (works in both local dev and Docker)
+const fs = require('fs');
+const frontendPath = [
+  path.join(__dirname, '../../frontend/public'),  // local dev: backend/src -> astrodash/frontend/public
+  path.join(__dirname, '../frontend/public'),      // Docker: /app/src -> /app/frontend/public
+].find((p) => fs.existsSync(p)) || path.join(__dirname, '../../frontend/public');
+
 // Serve static frontend files
-app.use(express.static(path.join(__dirname, '../../frontend/public')));
+app.use(express.static(frontendPath));
 
 // API routes
 app.use('/api', apiRoutes);
@@ -46,7 +53,7 @@ cardLoader.mount(app);
 
 // Serve index.html for root path
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/public/index.html'));
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // 404 handler for API routes
