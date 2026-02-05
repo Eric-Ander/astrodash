@@ -1,0 +1,20 @@
+{
+  "id": "astronomical-events",
+  "name": "Astronomical Events",
+  "description": "ISS passes, meteor showers, moon events, and solar times",
+  "version": "1.0.0",
+  "icon": "🌠",
+  "category": "events",
+  "defaultEnabled": true,
+  "defaultPosition": 5,
+  "requiresAuth": false,
+  "requiresLocation": true,
+  "dataSource": {
+    "endpoint": "/data",
+    "refreshInterval": 3600
+  },
+  "size": {
+    "default": "large",
+    "options": ["medium", "large"]
+  }
+}

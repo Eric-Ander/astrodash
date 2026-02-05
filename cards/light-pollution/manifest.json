@@ -1,0 +1,20 @@
+{
+  "id": "light-pollution",
+  "name": "Light Pollution",
+  "description": "Bortle scale rating, sky quality, and limiting magnitude",
+  "version": "1.0.0",
+  "icon": "🌌",
+  "category": "conditions",
+  "defaultEnabled": true,
+  "defaultPosition": 4,
+  "requiresAuth": false,
+  "requiresLocation": true,
+  "dataSource": {
+    "endpoint": "/data",
+    "refreshInterval": 86400
+  },
+  "size": {
+    "default": "medium",
+    "options": ["small", "medium", "large"]
+  }
+}

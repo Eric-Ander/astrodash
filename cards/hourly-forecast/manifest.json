@@ -1,0 +1,20 @@
+{
+  "id": "hourly-forecast",
+  "name": "Hourly Forecast",
+  "description": "Tonight's 3-hour astronomical weather forecast with multi-day view",
+  "version": "1.0.0",
+  "icon": "🌃",
+  "category": "weather",
+  "defaultEnabled": true,
+  "defaultPosition": 3,
+  "requiresAuth": false,
+  "requiresLocation": true,
+  "dataSource": {
+    "endpoint": "/data",
+    "refreshInterval": 1800
+  },
+  "size": {
+    "default": "large",
+    "options": ["large"]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "weather-summary",
+  "name": "Weather Summary",
+  "description": "Overall sky quality, average score, cloud coverage, and best observation time",
+  "version": "1.0.0",
+  "icon": "🔭",
+  "category": "weather",
+  "defaultEnabled": true,
+  "defaultPosition": 1,
+  "requiresAuth": false,
+  "requiresLocation": true,
+  "dataSource": {
+    "endpoint": "/data",
+    "refreshInterval": 1800
+  },
+  "size": {
+    "default": "large",
+    "options": ["medium", "large"]
+  }
+}
