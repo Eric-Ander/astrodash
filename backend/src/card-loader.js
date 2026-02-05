@@ -12,7 +12,21 @@ const express = require('express');
 class CardLoader {
   constructor() {
     this.cards = new Map();
-    this.cardsDir = path.resolve(__dirname, '../../cards');
+    this.cardsDir = this.resolveCardsDir();
+  }
+
+  /**
+   * Find the cards directory. Works both in Docker (/app/cards)
+   * and in local development (../../cards relative to this file).
+   */
+  resolveCardsDir() {
+    const candidates = [
+      process.env.CARDS_PATH,
+      path.resolve(__dirname, '../../cards'),  // local dev
+      '/app/cards',                            // Docker container
+    ];
+    return candidates.find((p) => p && fs.existsSync(p))
+      || path.resolve(__dirname, '../../cards');
   }
 
   /**
