@@ -6,7 +6,6 @@ class AstroWeather {
         this.currentLat = null;
         this.currentLon = null;
         this.currentCity = null;
-        this.isMultiDayView = false;
         this.init();
         
         // Make app globally accessible for auth integration
@@ -16,7 +15,6 @@ class AstroWeather {
     init() {
         this.setupEventListeners();
         this.setupTabs();
-        this.setupMultiDayToggle();
     }
 
     setupEventListeners() {
@@ -44,68 +42,6 @@ class AstroWeather {
                 this.fetchForecast({ lat, lon });
             }
         });
-    }
-
-    setupMultiDayToggle() {
-        const toggleButton = document.getElementById('toggleMultiDay');
-        toggleButton.addEventListener('click', () => {
-            this.isMultiDayView = !this.isMultiDayView;
-            
-            if (this.isMultiDayView) {
-                if (window.i18nManager) {
-                    toggleButton.textContent = i18nManager.t('forecast.toggleTonight');
-                } else {
-                    toggleButton.textContent = 'View Tonight Only';
-                }
-                this.fetchMultiDayForecast();
-            } else {
-                if (window.i18nManager) {
-                    toggleButton.textContent = i18nManager.t('forecast.toggleMultiDay');
-                } else {
-                    toggleButton.textContent = 'View 5-Night Forecast';
-                }
-                // Re-fetch tonight's forecast
-                if (this.currentCity) {
-                    this.fetchForecast({ city: this.currentCity });
-                } else if (this.currentLat && this.currentLon) {
-                    this.fetchForecast({ lat: this.currentLat, lon: this.currentLon });
-                }
-            }
-        });
-    }
-
-    async fetchMultiDayForecast() {
-        this.showLoading();
-        this.hideError();
-
-        try {
-            let queryString;
-            if (this.currentCity) {
-                queryString = new URLSearchParams({ city: this.currentCity, days: 5 }).toString();
-            } else {
-                queryString = new URLSearchParams({ 
-                    lat: this.currentLat, 
-                    lon: this.currentLon, 
-                    days: 5 
-                }).toString();
-            }
-
-            const response = await fetch(`${this.apiBaseUrl}/weather/forecast/multiday?${queryString}`);
-            
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to fetch multi-day forecast');
-            }
-
-            const data = await response.json();
-            this.displayMultiDayResults(data);
-            this.hideLoading();
-
-        } catch (error) {
-            console.error('Error fetching multi-day forecast:', error);
-            this.showError(error.message);
-            this.hideLoading();
-        }
     }
 
     setupTabs() {
@@ -424,79 +360,6 @@ class AstroWeather {
             ${event.description ? `<div class="event-description">${event.description}</div>` : ''}
             ${countdownHTML}
         `;
-
-        return card;
-    }
-
-    displayMultiDayResults(data) {
-        const container = document.getElementById('multiDayForecast');
-        container.innerHTML = '';
-
-        // Hide tonight's forecast, show multi-day
-        document.getElementById('hourlyForecast').classList.add('hidden');
-        document.getElementById('multiDayForecast').classList.remove('hidden');
-        
-        const titleEl = document.getElementById('forecastTitle');
-        if (window.i18nManager) {
-            titleEl.textContent = i18nManager.t('forecast.multiDayTitle');
-        } else {
-            titleEl.textContent = "5-Night Forecast";
-        }
-
-        data.nights.forEach(night => {
-            const nightCard = this.createNightCard(night);
-            container.appendChild(nightCard);
-        });
-    }
-
-    createNightCard(night) {
-        const card = document.createElement('div');
-        card.className = 'night-card';
-
-        const date = new Date(night.date);
-        const dateStr = date.toLocaleDateString('en-US', { 
-            weekday: 'long', 
-            month: 'short', 
-            day: 'numeric' 
-        });
-
-        card.innerHTML = `
-            <div class="night-header">
-                <div class="night-date">${dateStr}</div>
-                <div class="night-moon">
-                    <span class="night-moon-emoji">${night.moon.emoji}</span>
-                    <span class="night-moon-info">${night.moon.phase_name}<br>${night.moon.illumination}%</span>
-                </div>
-            </div>
-            
-            <div class="night-summary">
-                <div class="night-summary-item">
-                    <div class="night-summary-label">Sky Quality</div>
-                    <div class="night-summary-value">${night.summary.overall_quality}</div>
-                </div>
-                <div class="night-summary-item">
-                    <div class="night-summary-label">Avg Score</div>
-                    <div class="night-summary-value">${night.summary.average_score}/100</div>
-                </div>
-                <div class="night-summary-item">
-                    <div class="night-summary-label">Avg Clouds</div>
-                    <div class="night-summary-value">${night.summary.average_cloud_coverage}%</div>
-                </div>
-                <div class="night-summary-item">
-                    <div class="night-summary-label">Best Time</div>
-                    <div class="night-summary-value">${night.best_observation_time ? night.best_observation_time.time : 'N/A'}</div>
-                </div>
-            </div>
-            
-            <div class="night-hourly" id="night-${night.date}"></div>
-        `;
-
-        // Add hourly forecast items
-        const hourlyContainer = card.querySelector(`#night-${night.date}`);
-        night.hourly_forecast.forEach(hour => {
-            const forecastItem = this.createForecastItem(hour);
-            hourlyContainer.appendChild(forecastItem);
-        });
 
         return card;
     }
