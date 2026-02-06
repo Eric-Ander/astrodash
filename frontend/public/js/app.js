@@ -130,7 +130,6 @@ class AstroWeather {
     async fetchForecast(params) {
         this.showLoading();
         this.hideError();
-        this.hideResults();
 
         try {
             const queryString = new URLSearchParams(params).toString();
