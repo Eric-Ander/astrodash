@@ -209,9 +209,16 @@ class CardManager {
 
   /**
    * Update the location context and push it to all active cards.
+   * Also shows the card dashboard if it was hidden.
    */
   setLocation(location) {
     this.location = location;
+
+    // Show the card dashboard
+    if (this.container) {
+      this.container.classList.remove('hidden');
+    }
+
     for (const [, el] of this.activeCards) {
       el.location = location;
     }
@@ -330,37 +337,11 @@ class CardManager {
   }
 
   /**
-   * Intercept the legacy search forms to capture location data for cards.
+   * No longer needed - app.js now calls setLocation() directly.
+   * Kept as empty method for backwards compatibility.
    */
   interceptLocationSearch() {
-    // Observe the legacy results section becoming visible
-    const resultsSection = document.getElementById('resultsSection');
-    if (!resultsSection) return;
-
-    const observer = new MutationObserver(() => {
-      if (!resultsSection.classList.contains('hidden') && window.astroApp) {
-        const app = window.astroApp;
-        const name =
-          document.getElementById('locationName')?.textContent || '';
-
-        if (app.currentLat && app.currentLon) {
-          this.setLocation({
-            lat: parseFloat(app.currentLat),
-            lon: parseFloat(app.currentLon),
-            name,
-          });
-        } else if (app.currentCity) {
-          // City-based search: location name is available but we need coords
-          // from the displayed results or the next fetch
-          this.setLocation({ city: app.currentCity, name });
-        }
-      }
-    });
-
-    observer.observe(resultsSection, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
+    // Legacy MutationObserver removed - app.js calls setLocation() directly
   }
 }
 

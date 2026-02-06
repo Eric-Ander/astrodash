@@ -142,14 +142,21 @@ class AstroWeather {
             }
 
             const data = await response.json();
-            this.displayResults(data);
             this.hideLoading();
 
-            // Store resolved coordinates (needed for card system when searching by city)
+            // Store resolved coordinates
             this.currentLat = data.location.coordinates.lat;
             this.currentLon = data.location.coordinates.lon;
+            this.currentLocationName = data.location.name;
 
-            this.showResults();
+            // Update card system with new location
+            if (window.cardManager) {
+                window.cardManager.setLocation({
+                    lat: this.currentLat,
+                    lon: this.currentLon,
+                    name: this.currentLocationName,
+                });
+            }
 
             // Notify authUI about current location for save functionality
             if (window.authUI) {
@@ -653,13 +660,7 @@ class AstroWeather {
         document.getElementById('errorMessage').classList.add('hidden');
     }
 
-    showResults() {
-        document.getElementById('resultsSection').classList.remove('hidden');
-    }
-
-    hideResults() {
-        document.getElementById('resultsSection').classList.add('hidden');
-    }
+    // Legacy showResults/hideResults removed - cards handle display now
 }
 
 // Initialize the application when DOM is ready
