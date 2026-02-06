@@ -148,6 +148,9 @@ class AstroWeather {
             this.currentLon = data.location.coordinates.lon;
             this.currentLocationName = data.location.name;
 
+            // Display location info
+            this.displayLocationInfo(data.location);
+
             // Update card system with new location
             if (window.cardManager) {
                 window.cardManager.setLocation({
@@ -659,7 +662,35 @@ class AstroWeather {
         document.getElementById('errorMessage').classList.add('hidden');
     }
 
-    // Legacy showResults/hideResults removed - cards handle display now
+    displayLocationInfo(location) {
+        const container = document.getElementById('locationInfo');
+        const nameEl = document.getElementById('locationName');
+        const detailsEl = document.getElementById('locationDetails');
+
+        if (!container || !nameEl || !detailsEl) return;
+
+        // Build location name
+        nameEl.textContent = location.name;
+
+        // Build details string with available info
+        const details = [];
+        if (location.state) details.push(location.state);
+        if (location.country) details.push(location.country);
+
+        // Add coordinates
+        const lat = location.coordinates?.lat;
+        const lon = location.coordinates?.lon;
+        if (lat !== undefined && lon !== undefined) {
+            const latDir = lat >= 0 ? 'N' : 'S';
+            const lonDir = lon >= 0 ? 'E' : 'W';
+            details.push(`${Math.abs(lat).toFixed(4)}° ${latDir}, ${Math.abs(lon).toFixed(4)}° ${lonDir}`);
+        }
+
+        detailsEl.textContent = details.join(' · ');
+
+        // Show the container
+        container.classList.remove('hidden');
+    }
 }
 
 // Initialize the application when DOM is ready

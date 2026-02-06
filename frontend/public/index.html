@@ -30,7 +30,8 @@
         <header class="header">
             <div class="header-content">
                 <div class="header-controls">
-                    <div class="language-selector">
+                    <!-- Language selector hidden for now -->
+                    <div class="language-selector hidden">
                         <select id="languageSelect" class="language-select">
                             <option value="en">English</option>
                             <option value="de">Deutsch</option>
@@ -131,6 +132,12 @@
                     </button>
                 </form>
             </div>
+
+            <!-- Location Info (shown after search) -->
+            <div id="locationInfo" class="location-info hidden">
+                <h2 id="locationName"></h2>
+                <p id="locationDetails"></p>
+            </div>
         </section>
 
         <!-- Loading Indicator -->
@@ -147,7 +154,7 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <p>&copy; 2025 AstroWeather | Weather data provided by OpenWeatherMap</p>
+            <p>&copy; 2026 AstroDashboard Eric Anderson | Weather data provided by OpenWeatherMap</p>
         </footer>
     </div>
 
