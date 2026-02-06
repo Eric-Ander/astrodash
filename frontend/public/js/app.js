@@ -169,8 +169,7 @@ class AstroWeather {
                 );
             }
 
-            // Fetch astronomical events for the same location
-            this.fetchEvents(params);
+            // Events are now handled by the card system
 
         } catch (error) {
             console.error('Error fetching forecast:', error);
