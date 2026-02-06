@@ -4,6 +4,19 @@ import { BaseCard } from '/js/base-card.js';
 class AstronomicalEventsCard extends BaseCard {
   static get cardStyles() {
     return css`
+      /* Summary styles */
+      .events-summary {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .summary-events {
+        font-size: 0.85rem;
+        color: #ccc;
+      }
+
+      /* Full content styles */
       .events-sections {
         display: flex;
         flex-direction: column;
@@ -160,6 +173,39 @@ class AstronomicalEventsCard extends BaseCard {
           grid-template-columns: 1fr 1fr;
         }
       }
+    `;
+  }
+
+  renderSummary() {
+    const d = this._data;
+    if (!d) {
+      return html`<div class="summary-row"><span style="color:#888">Search for a location</span></div>`;
+    }
+
+    const issCount = d.iss_passes?.length || 0;
+    const showerCount = d.meteor_showers?.length || 0;
+    const moonEvent = d.moon_events?.[0];
+    const solar = d.solar_events;
+
+    const summaryParts = [];
+    if (issCount > 0) summaryParts.push(`${issCount} ISS pass${issCount > 1 ? 'es' : ''}`);
+    if (showerCount > 0) summaryParts.push(`${showerCount} meteor shower${showerCount > 1 ? 's' : ''}`);
+    if (moonEvent) summaryParts.push(`${moonEvent.name} in ${moonEvent.days_until}d`);
+
+    return html`
+      <div class="events-summary">
+        ${solar
+          ? html`
+              <span class="summary-metric">
+                <span class="label">Dark:</span>
+                <span class="value">${solar.astronomical_twilight_end_formatted}</span>
+                <span>-</span>
+                <span class="value">${solar.astronomical_twilight_begin_formatted}</span>
+              </span>
+            `
+          : ''}
+        <span class="summary-events">${summaryParts.join(' · ') || 'No events'}</span>
+      </div>
     `;
   }
 

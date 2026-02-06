@@ -7,9 +7,13 @@ import { LitElement, html, css } from 'lit';
  * a standard card chrome (title, icon, loading/error states), and
  * helper methods for data fetching and i18n.
  *
+ * Cards start in a collapsed state showing a summary view. Clicking
+ * the card header or summary expands it to show full content.
+ *
  * Card implementations extend this and override:
  *   - cardStyles (static getter) - card-specific CSS
- *   - renderContent() - card body when data is available
+ *   - renderSummary() - compact summary for collapsed state
+ *   - renderContent() - full card body when expanded
  *   - fetchCardData() - fetch data from the card's backend endpoint
  */
 export class BaseCard extends LitElement {
@@ -26,6 +30,7 @@ export class BaseCard extends LitElement {
     _data: { type: Object, state: true },
     _loading: { type: Boolean, state: true },
     _error: { type: String, state: true },
+    _expanded: { type: Boolean, state: true },
   };
 
   // Base styles shared by all cards
@@ -51,34 +56,72 @@ export class BaseCard extends LitElement {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 20px 24px 0;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s ease;
+    }
+
+    .card-header:hover {
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .card-header-icon {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
     }
 
     .card-header-title {
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--card-title-color, #00d4ff);
       margin: 0;
+      flex: 1;
     }
 
+    .card-expand-icon {
+      font-size: 0.75rem;
+      color: #888;
+      transition: transform 0.25s ease;
+    }
+
+    .card-expand-icon.expanded {
+      transform: rotate(180deg);
+    }
+
+    /* ── Collapsed summary view ── */
+    .card-summary {
+      padding: 0 20px 16px;
+      min-height: 60px;
+      cursor: pointer;
+    }
+
+    /* ── Expanded full content ── */
     .card-body {
-      padding: 20px 24px 24px;
+      padding: 0 20px 20px;
+      animation: slideIn 0.2s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        max-height: 0;
+      }
+      to {
+        opacity: 1;
+        max-height: 2000px;
+      }
     }
 
     .card-loading {
       text-align: center;
-      padding: 40px 20px;
+      padding: 30px 20px;
       color: #ccc;
     }
 
     .card-loading .spinner {
-      width: 36px;
-      height: 36px;
-      margin: 0 auto 12px;
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 10px;
       border: 3px solid rgba(255, 255, 255, 0.1);
       border-top-color: var(--card-title-color, #00d4ff);
       border-radius: 50%;
@@ -86,21 +129,66 @@ export class BaseCard extends LitElement {
     }
 
     @keyframes card-spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .card-error {
-      padding: 20px 24px;
+      padding: 16px 20px;
       color: #ff6b6b;
       text-align: center;
       font-size: 0.9rem;
     }
 
     .card-empty {
-      padding: 30px 24px;
+      padding: 24px 20px;
       color: #ccc;
       text-align: center;
       font-size: 0.95rem;
+    }
+
+    /* ── Summary styles (can be used by cards) ── */
+    .summary-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .summary-metric {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    .summary-metric .value {
+      font-weight: 700;
+      color: #eee;
+    }
+
+    .summary-metric .label {
+      font-size: 0.75rem;
+      color: #999;
+    }
+
+    .summary-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .summary-highlight {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #00d4ff;
     }
   `;
 
@@ -121,6 +209,7 @@ export class BaseCard extends LitElement {
     this._data = null;
     this._loading = false;
     this._error = null;
+    this._expanded = false;
   }
 
   /**
@@ -189,7 +278,24 @@ export class BaseCard extends LitElement {
   }
 
   /**
-   * Override in subclasses to render the card body.
+   * Toggle expanded/collapsed state.
+   */
+  toggleExpanded() {
+    this._expanded = !this._expanded;
+  }
+
+  /**
+   * Override in subclasses to render a compact summary view.
+   * Shown when the card is collapsed.
+   */
+  renderSummary() {
+    // Default: show a hint to expand
+    return html`<div class="summary-row"><span style="color:#888">Click to view details</span></div>`;
+  }
+
+  /**
+   * Override in subclasses to render the full card body.
+   * Shown when the card is expanded.
    */
   renderContent() {
     return html`<div class="card-empty">No data</div>`;
@@ -200,13 +306,14 @@ export class BaseCard extends LitElement {
       <div class="card">
         ${this.cardTitle || this.cardIcon
           ? html`
-              <div class="card-header">
+              <div class="card-header" @click=${this.toggleExpanded}>
                 ${this.cardIcon
                   ? html`<span class="card-header-icon">${this.cardIcon}</span>`
                   : ''}
                 ${this.cardTitle
                   ? html`<h3 class="card-header-title">${this.cardTitle}</h3>`
                   : ''}
+                <span class="card-expand-icon ${this._expanded ? 'expanded' : ''}">▼</span>
               </div>
             `
           : ''}
@@ -220,7 +327,9 @@ export class BaseCard extends LitElement {
             `
           : this._error
             ? html`<div class="card-error">${this._error}</div>`
-            : html`<div class="card-body">${this.renderContent()}</div>`}
+            : this._expanded
+              ? html`<div class="card-body">${this.renderContent()}</div>`
+              : html`<div class="card-summary" @click=${this.toggleExpanded}>${this.renderSummary()}</div>`}
       </div>
     `;
   }

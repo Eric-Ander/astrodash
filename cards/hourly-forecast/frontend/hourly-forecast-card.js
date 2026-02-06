@@ -11,6 +11,14 @@ class HourlyForecastCard extends BaseCard {
 
   static get cardStyles() {
     return css`
+      /* Summary styles */
+      .forecast-summary {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
       .forecast-controls {
         display: flex;
         justify-content: flex-end;
@@ -301,6 +309,40 @@ class HourlyForecastCard extends BaseCard {
     this._multiDay = false;
     this._expandedHours = new Set();
     this._expandedNights = new Set();
+  }
+
+  renderSummary() {
+    const d = this._data;
+    if (!d) {
+      return html`<div class="summary-row"><span style="color:#888">Search for a location</span></div>`;
+    }
+
+    // Find best observation window
+    const hours = d.hourly_forecast || [];
+    if (hours.length === 0) {
+      return html`<div class="summary-row"><span style="color:#888">No forecast data</span></div>`;
+    }
+
+    const best = hours.reduce((a, b) => (b.astronomy_score > a.astronomy_score ? b : a), hours[0]);
+    const avgScore = Math.round(hours.reduce((s, h) => s + h.astronomy_score, 0) / hours.length);
+
+    return html`
+      <div class="forecast-summary">
+        <span class="summary-metric">
+          <span class="label">Tonight avg:</span>
+          <span class="value">${avgScore}</span>
+        </span>
+        <span class="summary-metric">
+          <span class="label">Best:</span>
+          <span class="value" style="color: ${best.score_color}">${best.time}</span>
+          <span>(${best.astronomy_score})</span>
+        </span>
+        <span class="summary-metric">
+          <span class="label">Hours:</span>
+          <span class="value">${hours.length}</span>
+        </span>
+      </div>
+    `;
   }
 
   getWeatherEmoji(iconCode) {

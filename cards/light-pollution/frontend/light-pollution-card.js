@@ -4,6 +4,57 @@ import { BaseCard } from '/js/base-card.js';
 class LightPollutionCard extends BaseCard {
   static get cardStyles() {
     return css`
+      /* Summary styles */
+      .lp-summary {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .lp-summary-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .lp-summary-number {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: white;
+      }
+
+      .lp-summary-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .lp-summary-location {
+        font-size: 0.8rem;
+        color: #aaa;
+      }
+
+      .lp-summary-name {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #eee;
+      }
+
+      .lp-summary-quality {
+        display: inline-block;
+        align-self: flex-start;
+        padding: 2px 8px;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: white;
+      }
+
+      /* Full content styles */
       .location-name {
         text-align: center;
         font-size: 1rem;
@@ -151,6 +202,28 @@ class LightPollutionCard extends BaseCard {
       '#001a00', '#003300', '#004d00', '#006600',
       '#808000', '#999900', '#cc9900', '#ff6600', '#ff0000',
     ];
+  }
+
+  renderSummary() {
+    const d = this._data;
+    if (!d) {
+      return html`<div class="summary-row"><span style="color:#888">Search for a location</span></div>`;
+    }
+
+    const locationName = this.location?.name || d.nearest_city || '';
+
+    return html`
+      <div class="lp-summary">
+        <div class="lp-summary-circle" style="background: ${d.color}">
+          <span class="lp-summary-number">${d.bortle_class}</span>
+        </div>
+        <div class="lp-summary-info">
+          ${locationName ? html`<span class="lp-summary-location">${locationName}</span>` : ''}
+          <span class="lp-summary-name">${d.class_name}</span>
+          <span class="lp-summary-quality" style="background: ${d.color}">${d.quality}</span>
+        </div>
+      </div>
+    `;
   }
 
   renderContent() {

@@ -4,6 +4,46 @@ import { BaseCard } from '/js/base-card.js';
 class WeatherSummaryCard extends BaseCard {
   static get cardStyles() {
     return css`
+      /* Summary styles */
+      .weather-summary {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .weather-summary-badge {
+        padding: 6px 14px;
+        border-radius: 16px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: white;
+      }
+
+      .weather-summary-score {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #00d4ff;
+      }
+
+      .weather-summary-detail {
+        font-size: 0.85rem;
+        color: #ccc;
+      }
+
+      .weather-summary-best {
+        margin-left: auto;
+        text-align: right;
+        font-size: 0.85rem;
+        color: #ccc;
+      }
+
+      .weather-summary-best .time {
+        font-weight: 700;
+        color: #e94560;
+      }
+
+      /* Full content styles */
       .summary-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -62,6 +102,11 @@ class WeatherSummaryCard extends BaseCard {
         .summary-grid {
           grid-template-columns: 1fr;
         }
+
+        .weather-summary-best {
+          margin-left: 0;
+          text-align: left;
+        }
       }
     `;
   }
@@ -73,6 +118,32 @@ class WeatherSummaryCard extends BaseCard {
     if (score >= 45) return '#ffa500';
     if (score >= 30) return '#ff6600';
     return '#ff0000';
+  }
+
+  renderSummary() {
+    const d = this._data;
+    if (!d) {
+      return html`<div class="summary-row"><span style="color:#888">Search for a location</span></div>`;
+    }
+
+    const s = d.summary;
+    const best = d.best_observation_time;
+    const color = this.getScoreColor(s.average_score);
+
+    return html`
+      <div class="weather-summary">
+        <span class="weather-summary-badge" style="background: ${color}">${s.overall_quality}</span>
+        <span class="weather-summary-score">${s.average_score}/100</span>
+        <span class="weather-summary-detail">Clouds: ${s.average_cloud_coverage}%</span>
+        ${best
+          ? html`
+              <span class="weather-summary-best">
+                Best: <span class="time">${best.time}</span> (${best.score})
+              </span>
+            `
+          : ''}
+      </div>
+    `;
   }
 
   renderContent() {

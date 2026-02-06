@@ -8,6 +8,45 @@ class MoonPhaseCard extends BaseCard {
         border-color: #4a5568;
       }
 
+      /* Summary styles */
+      .moon-summary {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .moon-summary-emoji {
+        font-size: 2.5rem;
+      }
+
+      .moon-summary-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .moon-summary-phase {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #eee;
+      }
+
+      .moon-summary-detail {
+        font-size: 0.85rem;
+        color: #ccc;
+      }
+
+      .moon-summary-impact {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background: rgba(255, 215, 0, 0.2);
+        color: #ffd700;
+      }
+
+      /* Full content styles */
       .moon-content {
         display: grid;
         grid-template-columns: auto 1fr;
@@ -75,6 +114,24 @@ class MoonPhaseCard extends BaseCard {
           gap: 4px;
         }
       }
+    `;
+  }
+
+  renderSummary() {
+    const d = this._data;
+    if (!d) {
+      return html`<div class="summary-row"><span style="color:#888">Search for a location</span></div>`;
+    }
+
+    return html`
+      <div class="moon-summary">
+        <span class="moon-summary-emoji">${d.emoji}</span>
+        <div class="moon-summary-info">
+          <span class="moon-summary-phase">${d.phase}</span>
+          <span class="moon-summary-detail">${d.illumination}% illumination</span>
+          <span class="moon-summary-impact">${d.visibility_impact?.rating || 'Unknown'} impact</span>
+        </div>
+      </div>
     `;
   }
 
