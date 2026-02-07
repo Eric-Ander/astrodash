@@ -370,4 +370,4 @@ class AdminManager {
 }
 
 // Create global instance
-const adminManager = new AdminManager();
+window.adminManager = new AdminManager();
