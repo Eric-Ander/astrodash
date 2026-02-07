@@ -1,4 +1,5 @@
 const authService = require('../services/authService');
+const db = require('../config/database');
 
 /**
  * Middleware to authenticate JWT token
@@ -18,11 +19,22 @@ const authenticateToken = (req, res, next) => {
 
     // Verify token
     const decoded = authService.verifyToken(token);
-    
+
+    // Get user from database to check admin status
+    const user = db.prepare('SELECT id, email, is_admin FROM users WHERE id = ?').get(decoded.userId);
+
+    if (!user) {
+      return res.status(401).json({
+        error: 'User not found',
+        message: 'User account no longer exists'
+      });
+    }
+
     // Add user info to request
     req.user = {
-      userId: decoded.userId,
-      email: decoded.email
+      userId: user.id,
+      email: user.email,
+      isAdmin: user.is_admin === 1
     };
 
     next();
@@ -45,10 +57,15 @@ const optionalAuth = (req, res, next) => {
 
     if (token) {
       const decoded = authService.verifyToken(token);
-      req.user = {
-        userId: decoded.userId,
-        email: decoded.email
-      };
+      const user = db.prepare('SELECT id, email, is_admin FROM users WHERE id = ?').get(decoded.userId);
+
+      if (user) {
+        req.user = {
+          userId: user.id,
+          email: user.email,
+          isAdmin: user.is_admin === 1
+        };
+      }
     }
 
     next();
@@ -58,7 +75,30 @@ const optionalAuth = (req, res, next) => {
   }
 };
 
+/**
+ * Middleware to require admin privileges
+ * Must be used after authenticateToken
+ */
+const requireAdmin = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      error: 'Authentication required',
+      message: 'You must be logged in'
+    });
+  }
+
+  if (!req.user.isAdmin) {
+    return res.status(403).json({
+      error: 'Access denied',
+      message: 'Admin privileges required'
+    });
+  }
+
+  next();
+};
+
 module.exports = {
   authenticateToken,
-  optionalAuth
+  optionalAuth,
+  requireAdmin
 };

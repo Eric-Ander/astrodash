@@ -48,6 +48,7 @@ class AuthUIController {
         // User menu
         document.getElementById('userMenuButton')?.addEventListener('click', () => this.toggleUserDropdown());
         document.getElementById('savedLocationsBtn')?.addEventListener('click', () => this.showSavedLocations());
+        document.getElementById('adminPanelBtn')?.addEventListener('click', () => this.showAdminPanel());
         document.getElementById('logoutBtn')?.addEventListener('click', () => this.handleLogout());
 
         // Save current location
@@ -163,6 +164,7 @@ class AuthUIController {
     async updateUIForAuthState() {
         const loginButton = document.getElementById('loginButton');
         const userMenu = document.getElementById('userMenu');
+        const adminPanelBtn = document.getElementById('adminPanelBtn');
 
         if (window.authManager.isLoggedIn()) {
             loginButton.classList.add('hidden');
@@ -172,12 +174,22 @@ class AuthUIController {
             try {
                 const user = await window.authManager.getProfile();
                 document.getElementById('userName').textContent = user.name || user.email.split('@')[0];
+
+                // Show admin button if user is admin
+                if (user.isAdmin && adminPanelBtn) {
+                    adminPanelBtn.classList.remove('hidden');
+                } else if (adminPanelBtn) {
+                    adminPanelBtn.classList.add('hidden');
+                }
             } catch (error) {
                 console.error('Failed to get profile:', error);
             }
         } else {
             loginButton.classList.remove('hidden');
             userMenu.classList.add('hidden');
+            if (adminPanelBtn) {
+                adminPanelBtn.classList.add('hidden');
+            }
         }
     }
 
@@ -185,6 +197,14 @@ class AuthUIController {
     toggleUserDropdown() {
         const dropdown = document.getElementById('userDropdown');
         dropdown.classList.toggle('hidden');
+    }
+
+    // Show admin panel
+    showAdminPanel() {
+        this.toggleUserDropdown();
+        if (window.adminManager) {
+            window.adminManager.openModal();
+        }
     }
 
     // Show saved locations

@@ -55,10 +55,19 @@ const initDb = () => {
       email TEXT NOT NULL UNIQUE,
       password_hash TEXT NOT NULL,
       name TEXT,
+      is_admin INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       last_login DATETIME
     )
   `);
+
+  // Migration: Add is_admin column if it doesn't exist (for existing databases)
+  const columns = db.prepare("PRAGMA table_info(users)").all();
+  const hasIsAdmin = columns.some(col => col.name === 'is_admin');
+  if (!hasIsAdmin) {
+    db.exec(`ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0`);
+    console.log('Added is_admin column to users table');
+  }
 
   // Saved locations table
   db.exec(`

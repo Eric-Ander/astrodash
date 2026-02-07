@@ -50,6 +50,9 @@
                             <div class="dropdown-item" id="savedLocationsBtn">
                                 <span>📍</span> Saved Locations
                             </div>
+                            <div class="dropdown-item hidden" id="adminPanelBtn">
+                                <span>👑</span> User Management
+                            </div>
                             <div class="dropdown-item" id="logoutBtn">
                                 <span>🚪</span> Logout
                             </div>
@@ -216,6 +219,36 @@
         </div>
     </div>
 
+    <!-- Admin Panel Modal -->
+    <div id="adminModal" class="modal hidden">
+        <div class="modal-content admin-modal">
+            <span class="modal-close" id="closeAdminModal">&times;</span>
+            <h2>👑 User Management</h2>
+
+            <!-- Stats Section -->
+            <div id="adminStats" class="admin-stats">
+                <div class="admin-loading">Loading statistics...</div>
+            </div>
+
+            <!-- Search -->
+            <div class="admin-search">
+                <input type="text" id="adminSearchInput" placeholder="Search by email or name..." class="admin-search-input">
+            </div>
+
+            <!-- Users List -->
+            <div id="adminUsersList" class="admin-users-list">
+                <div class="admin-loading">Loading users...</div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="admin-pagination">
+                <button id="adminPrevPage" class="pagination-btn" disabled>← Previous</button>
+                <span id="adminPageInfo">Page 1 of 1</span>
+                <button id="adminNextPage" class="pagination-btn">Next →</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Save Current Location Button (shown after search) -->
     <div id="saveLocationContainer" class="save-location-container hidden">
         <button id="saveCurrentLocationBtn" class="save-location-btn">
@@ -226,6 +259,7 @@
     <script src="/js/i18n.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/auth-ui.js"></script>
+    <script src="/js/admin.js"></script>
     <script src="/js/app.js"></script>
     <!-- Card system (ES modules) -->
     <script type="module" src="/js/card-manager.js"></script>

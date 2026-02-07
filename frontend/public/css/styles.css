@@ -1521,3 +1521,236 @@ body {
         font-size: 0.9rem;
     }
 }
+
+/* Admin Panel Styles */
+.admin-modal {
+    max-width: 700px;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: var(--accent-color);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--highlight-color);
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #00d4ff;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-search {
+    margin-bottom: 15px;
+}
+
+.admin-search-input {
+    width: 100%;
+    padding: 12px 15px;
+    background: var(--accent-color);
+    border: 2px solid var(--highlight-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.admin-search-input:focus {
+    outline: none;
+    border-color: #00d4ff;
+}
+
+.admin-search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.admin-users-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.user-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: var(--accent-color);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+    transition: var(--transition);
+}
+
+.user-row:hover {
+    border-color: var(--highlight-color);
+}
+
+.user-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.user-email {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.user-details {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.admin-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #ffd700;
+    color: #1a1a2e;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.you-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #00d4ff;
+    color: #1a1a2e;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.user-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.action-btn {
+    padding: 8px 10px;
+    background: var(--secondary-color);
+    border: 1px solid var(--highlight-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.action-btn:hover {
+    background: var(--highlight-color);
+    transform: scale(1.1);
+}
+
+.action-btn.delete:hover {
+    background: #e94560;
+}
+
+.action-btn.promote:hover {
+    background: #ffd700;
+}
+
+.action-btn.demote:hover {
+    background: #ff9900;
+}
+
+.action-btn.reset:hover {
+    background: #00d4ff;
+}
+
+.admin-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--accent-color);
+}
+
+.pagination-btn {
+    padding: 8px 16px;
+    background: var(--accent-color);
+    border: 1px solid var(--highlight-color);
+    border-radius: 6px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--highlight-color);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#adminPageInfo {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.admin-loading {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-secondary);
+}
+
+.admin-error {
+    text-align: center;
+    padding: 20px;
+    color: #e94560;
+    background: rgba(233, 69, 96, 0.1);
+    border-radius: 8px;
+}
+
+.admin-empty {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Mobile responsive for admin panel */
+@media (max-width: 768px) {
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .user-row {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .user-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .admin-modal {
+        max-width: 95%;
+    }
+}

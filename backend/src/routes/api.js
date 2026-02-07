@@ -4,7 +4,8 @@ const weatherController = require('../controllers/weatherController');
 const eventsController = require('../controllers/eventsController');
 const authController = require('../controllers/authController');
 const cardPreferencesController = require('../controllers/cardPreferencesController');
-const { authenticateToken } = require('../middleware/auth');
+const userManagementController = require('../controllers/userManagementController');
+const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 // Authentication routes
 router.post('/auth/register', authController.register.bind(authController));
@@ -34,6 +35,15 @@ router.get('/events/meteors', eventsController.getMeteorShowers.bind(eventsContr
 router.get('/cards/preferences', authenticateToken, cardPreferencesController.getPreferences.bind(cardPreferencesController));
 router.put('/cards/preferences', authenticateToken, cardPreferencesController.savePreferences.bind(cardPreferencesController));
 router.patch('/cards/preferences/:cardId', authenticateToken, cardPreferencesController.updateCardPreference.bind(cardPreferencesController));
+
+// Admin routes (protected - requires admin privileges)
+router.get('/admin/stats', authenticateToken, requireAdmin, userManagementController.getStats);
+router.get('/admin/users', authenticateToken, requireAdmin, userManagementController.listUsers);
+router.get('/admin/users/:id', authenticateToken, requireAdmin, userManagementController.getUser);
+router.patch('/admin/users/:id', authenticateToken, requireAdmin, userManagementController.updateUser);
+router.delete('/admin/users/:id', authenticateToken, requireAdmin, userManagementController.deleteUser);
+router.post('/admin/users/:id/reset-password', authenticateToken, requireAdmin, userManagementController.resetPassword);
+router.post('/admin/users/:id/toggle-admin', authenticateToken, requireAdmin, userManagementController.toggleAdmin);
 
 // Health check
 router.get('/health', weatherController.healthCheck.bind(weatherController));

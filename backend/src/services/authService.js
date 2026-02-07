@@ -37,7 +37,8 @@ class AuthService {
         user: {
           id: userId,
           email,
-          name
+          name,
+          isAdmin: false
         },
         token
       };
@@ -76,7 +77,8 @@ class AuthService {
         user: {
           id: user.id,
           email: user.email,
-          name: user.name
+          name: user.name,
+          isAdmin: user.is_admin === 1
         },
         token
       };
@@ -112,8 +114,15 @@ class AuthService {
    * Get user by ID
    */
   getUserById(userId) {
-    const user = db.prepare('SELECT id, email, name, created_at FROM users WHERE id = ?').get(userId);
-    return user || null;
+    const user = db.prepare('SELECT id, email, name, is_admin, created_at FROM users WHERE id = ?').get(userId);
+    if (!user) return null;
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      isAdmin: user.is_admin === 1,
+      createdAt: user.created_at
+    };
   }
 }
 
