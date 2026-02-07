@@ -75,6 +75,7 @@ class AdminManager {
     if (!modal) return;
 
     modal.classList.remove('hidden');
+    modal.classList.add('active');
     this.init();
 
     // Load data
@@ -91,6 +92,7 @@ class AdminManager {
     const modal = document.getElementById('adminModal');
     if (modal) {
       modal.classList.add('hidden');
+      modal.classList.remove('active');
     }
   }
 
