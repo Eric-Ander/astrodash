@@ -25,6 +25,7 @@ router.post('/notifications/test', authenticateToken, authController.sendTestNot
 // Weather forecast endpoints
 router.get('/weather/forecast', weatherController.getForecast.bind(weatherController));
 router.get('/weather/forecast/multiday', weatherController.getMultiDayForecast.bind(weatherController));
+router.get('/weather/geocode', weatherController.searchCities.bind(weatherController));
 
 // Astronomical events endpoints
 router.get('/events', eventsController.getEvents.bind(eventsController));

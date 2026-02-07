@@ -42,6 +42,40 @@ class WeatherService {
   }
 
   /**
+   * Search for cities matching a name - returns up to 10 results for disambiguation
+   */
+  async searchCities(cityName, limit = 10) {
+    try {
+      const url = `http://api.openweathermap.org/geo/1.0/direct`;
+      const response = await axios.get(url, {
+        params: {
+          q: cityName,
+          limit: limit,
+          appid: OPENWEATHER_API_KEY
+        }
+      });
+
+      if (response.data && response.data.length > 0) {
+        return response.data.map(location => ({
+          lat: location.lat,
+          lon: location.lon,
+          name: location.name,
+          country: location.country,
+          state: location.state || null,
+          displayName: location.state
+            ? `${location.name}, ${location.state}, ${location.country}`
+            : `${location.name}, ${location.country}`
+        }));
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Error searching cities:', error.message);
+      throw new Error('Failed to search for cities');
+    }
+  }
+
+  /**
    * Check if we have valid cached forecast data
    */
   getCachedForecast(lat, lon) {

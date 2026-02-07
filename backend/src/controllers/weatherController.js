@@ -229,6 +229,44 @@ class WeatherController {
   }
 
   /**
+   * Search for cities by name - returns multiple results for disambiguation
+   */
+  async searchCities(req, res) {
+    try {
+      const cityName = req.query.city?.trim();
+
+      if (!cityName) {
+        return res.status(400).json({
+          error: 'Missing parameter',
+          message: 'City name is required'
+        });
+      }
+
+      const cities = await weatherService.searchCities(cityName, 10);
+
+      if (cities.length === 0) {
+        return res.status(404).json({
+          error: 'No results found',
+          message: `No cities found matching: ${cityName}`
+        });
+      }
+
+      res.json({
+        query: cityName,
+        count: cities.length,
+        cities: cities
+      });
+
+    } catch (error) {
+      console.error('Error in searchCities:', error);
+      res.status(500).json({
+        error: 'Internal server error',
+        message: error.message || 'Failed to search for cities'
+      });
+    }
+  }
+
+  /**
    * Health check endpoint
    */
   async healthCheck(req, res) {

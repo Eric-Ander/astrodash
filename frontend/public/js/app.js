@@ -23,10 +23,19 @@ class AstroWeather {
             e.preventDefault();
             const city = document.getElementById('cityInput').value.trim();
             if (city) {
-                this.currentCity = city;
-                this.currentLat = null;
-                this.currentLon = null;
-                this.fetchForecast({ city });
+                this.searchCity(city);
+            }
+        });
+
+        // City selection modal close button
+        document.getElementById('closeCitySelectModal')?.addEventListener('click', () => {
+            this.closeCitySelectModal();
+        });
+
+        // Close city select modal on outside click
+        document.getElementById('citySelectModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'citySelectModal') {
+                this.closeCitySelectModal();
             }
         });
 
@@ -61,6 +70,109 @@ class AstroWeather {
                 document.getElementById(`${tabName}Form`).classList.add('active');
             });
         });
+    }
+
+    /**
+     * Search for cities and handle disambiguation
+     */
+    async searchCity(cityName) {
+        this.showLoading();
+        this.hideError();
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/weather/geocode?city=${encodeURIComponent(cityName)}`);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'City not found');
+            }
+
+            const data = await response.json();
+            this.hideLoading();
+
+            if (data.count === 1) {
+                // Only one result - use it directly
+                const city = data.cities[0];
+                this.currentCity = city.displayName;
+                this.currentLat = city.lat;
+                this.currentLon = city.lon;
+                this.fetchForecast({ lat: city.lat, lon: city.lon });
+            } else {
+                // Multiple results - show selection modal
+                this.showCitySelectModal(data.cities);
+            }
+
+        } catch (error) {
+            console.error('Error searching city:', error);
+            this.showError(error.message);
+            this.hideLoading();
+        }
+    }
+
+    /**
+     * Show city selection modal with multiple options
+     */
+    showCitySelectModal(cities) {
+        const modal = document.getElementById('citySelectModal');
+        const listContainer = document.getElementById('citySelectList');
+
+        if (!modal || !listContainer) return;
+
+        // Build the city list
+        listContainer.innerHTML = cities.map((city, index) => `
+            <div class="city-select-item" tabindex="0" data-index="${index}">
+                <div>
+                    <div class="city-select-name">${city.name}</div>
+                    <div class="city-select-details">
+                        ${city.state ? city.state + ', ' : ''}${city.country}
+                    </div>
+                </div>
+                <div class="city-select-coords">
+                    ${city.lat.toFixed(2)}°, ${city.lon.toFixed(2)}°
+                </div>
+            </div>
+        `).join('');
+
+        // Add click handlers
+        listContainer.querySelectorAll('.city-select-item').forEach((item, index) => {
+            item.addEventListener('click', () => this.selectCity(cities[index]));
+            item.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.selectCity(cities[index]);
+                }
+            });
+        });
+
+        modal.classList.remove('hidden');
+        modal.classList.add('active');
+    }
+
+    /**
+     * Close city selection modal
+     */
+    closeCitySelectModal() {
+        const modal = document.getElementById('citySelectModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('active');
+        }
+    }
+
+    /**
+     * Handle city selection from disambiguation modal
+     */
+    selectCity(city) {
+        this.closeCitySelectModal();
+        this.currentCity = city.displayName;
+        this.currentLat = city.lat;
+        this.currentLon = city.lon;
+
+        // Update the city input field
+        document.getElementById('cityInput').value = city.displayName;
+
+        // Fetch forecast for selected city
+        this.fetchForecast({ lat: city.lat, lon: city.lon });
     }
 
     async fetchForecast(params) {

@@ -256,6 +256,16 @@
         </button>
     </div>
 
+    <!-- City Selection Modal (for disambiguation) -->
+    <div id="citySelectModal" class="modal hidden">
+        <div class="modal-content city-select-modal">
+            <span class="modal-close" id="closeCitySelectModal">&times;</span>
+            <h2>📍 Select Location</h2>
+            <p class="city-select-info">Multiple locations found. Please select the correct one:</p>
+            <div id="citySelectList" class="city-select-list"></div>
+        </div>
+    </div>
+
     <script src="/js/i18n.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/auth-ui.js"></script>

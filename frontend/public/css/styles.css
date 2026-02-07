@@ -1754,3 +1754,83 @@ body {
         max-width: 95%;
     }
 }
+
+/* ==========================================
+   City Selection Modal (Disambiguation)
+   ========================================== */
+
+.city-select-modal {
+    max-width: 500px;
+}
+
+.city-select-info {
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.city-select-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.city-select-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    background: var(--accent-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.city-select-item:hover {
+    background: var(--highlight-color);
+    transform: translateX(5px);
+}
+
+.city-select-item:focus {
+    outline: none;
+    border-color: #00d4ff;
+}
+
+.city-select-name {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.city-select-details {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 3px;
+}
+
+.city-select-coords {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+/* Scrollbar styling for city list */
+.city-select-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.city-select-list::-webkit-scrollbar-track {
+    background: var(--secondary-color);
+    border-radius: 4px;
+}
+
+.city-select-list::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 4px;
+}
+
+.city-select-list::-webkit-scrollbar-thumb:hover {
+    background: var(--highlight-color);
+}
