@@ -15,6 +15,11 @@ services:
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
       - DATABASE_PATH=/app/data/astroweather.db
       - CACHE_DURATION=60
+      - JWT_SECRET=${JWT_SECRET}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - APP_URL=${APP_URL}
+      - NOTIFICATION_SCHEDULE=${NOTIFICATION_SCHEDULE:-0 14 * * *}
     volumes:
       - ./backend/data:/app/data
       - ./frontend/public:/app/frontend/public:ro
