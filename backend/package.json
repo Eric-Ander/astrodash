@@ -21,7 +21,8 @@
     "bcrypt": "^5.1.1",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.7",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "resend": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
