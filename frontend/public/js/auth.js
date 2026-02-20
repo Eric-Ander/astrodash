@@ -231,6 +231,65 @@ class AuthManager {
             throw error;
         }
     }
+
+    // Update notification settings for a location
+    async updateNotificationSettings(locationId, enabled, cloudThreshold) {
+        try {
+            if (!this.token) {
+                throw new Error('Not authenticated');
+            }
+
+            const response = await fetch(`${this.API_BASE}/locations/${locationId}/notifications`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.token}`
+                },
+                body: JSON.stringify({
+                    enabled,
+                    cloud_threshold: cloudThreshold
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to update notification settings');
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Update notification settings error:', error);
+            throw error;
+        }
+    }
+
+    // Send test notification email
+    async sendTestNotification() {
+        try {
+            if (!this.token) {
+                throw new Error('Not authenticated');
+            }
+
+            const response = await fetch(`${this.API_BASE}/notifications/test`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to send test email');
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Send test notification error:', error);
+            throw error;
+        }
+    }
 }
 
 // Create global instance

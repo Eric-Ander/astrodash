@@ -336,6 +336,147 @@ class AuthUIController {
         }
     }
 
+    // Show notification settings modal
+    showNotificationSettings(location) {
+        // Create or get the notification settings modal
+        let modal = document.getElementById('notificationSettingsModal');
+
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'notificationSettingsModal';
+            modal.className = 'modal hidden';
+            document.body.appendChild(modal);
+        }
+
+        modal.innerHTML = `
+            <div class="modal-content notification-settings-modal">
+                <div class="modal-header">
+                    <h3>🔔 Notification Settings</h3>
+                    <button class="close-btn" id="closeNotificationSettings">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="location-title">
+                        <span class="location-icon">📍</span>
+                        <span>${location.location_name}</span>
+                    </div>
+
+                    <div class="setting-group">
+                        <label class="toggle-label">
+                            <span class="toggle-text">Enable email notifications</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="notificationEnabled" ${location.notifications_enabled ? 'checked' : ''}>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </label>
+                        <p class="setting-description">
+                            Receive an email when conditions are good for stargazing at this location.
+                        </p>
+                    </div>
+
+                    <div class="setting-group threshold-group" id="thresholdGroup">
+                        <label class="threshold-label">
+                            <span>Cloud coverage threshold</span>
+                            <span class="threshold-value" id="thresholdValue">${location.cloud_threshold || 20}%</span>
+                        </label>
+                        <input type="range" id="cloudThreshold" min="0" max="50" value="${location.cloud_threshold || 20}" class="threshold-slider">
+                        <p class="setting-description">
+                            You'll be notified when cloud coverage is at or below this percentage.
+                            Lower values = clearer skies required.
+                        </p>
+                    </div>
+
+                    <div class="setting-group test-group">
+                        <button class="test-email-btn" id="testEmailBtn">
+                            📧 Send Test Email
+                        </button>
+                        <p class="setting-description">
+                            Send a test email to verify your notifications are working.
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="cancelNotificationSettings">Cancel</button>
+                    <button class="btn-primary" id="saveNotificationSettings">Save Settings</button>
+                </div>
+            </div>
+        `;
+
+        // Show modal
+        modal.classList.remove('hidden');
+        modal.classList.add('active');
+
+        // Update threshold display
+        const thresholdSlider = document.getElementById('cloudThreshold');
+        const thresholdValue = document.getElementById('thresholdValue');
+        const thresholdGroup = document.getElementById('thresholdGroup');
+        const notificationEnabled = document.getElementById('notificationEnabled');
+
+        // Toggle threshold visibility based on notifications enabled
+        const updateThresholdVisibility = () => {
+            thresholdGroup.style.opacity = notificationEnabled.checked ? '1' : '0.5';
+            thresholdSlider.disabled = !notificationEnabled.checked;
+        };
+        updateThresholdVisibility();
+
+        notificationEnabled.addEventListener('change', updateThresholdVisibility);
+
+        thresholdSlider.addEventListener('input', () => {
+            thresholdValue.textContent = `${thresholdSlider.value}%`;
+        });
+
+        // Close handlers
+        const closeModal = () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('active');
+        };
+
+        document.getElementById('closeNotificationSettings').addEventListener('click', closeModal);
+        document.getElementById('cancelNotificationSettings').addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Test email handler
+        document.getElementById('testEmailBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('testEmailBtn');
+            btn.disabled = true;
+            btn.textContent = '📧 Sending...';
+
+            try {
+                await window.authManager.sendTestNotification();
+                this.showNotification('✅ Test email sent! Check your inbox.');
+            } catch (error) {
+                this.showNotification('❌ ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📧 Send Test Email';
+            }
+        });
+
+        // Save handler
+        document.getElementById('saveNotificationSettings').addEventListener('click', async () => {
+            const btn = document.getElementById('saveNotificationSettings');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                await window.authManager.updateNotificationSettings(
+                    location.id,
+                    notificationEnabled.checked,
+                    parseInt(thresholdSlider.value)
+                );
+                this.showNotification('✅ Notification settings saved!');
+                closeModal();
+                this.showSavedLocations(); // Refresh list
+            } catch (error) {
+                this.showNotification('❌ ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Settings';
+            }
+        });
+    }
+
     // Save current location
     async saveCurrentLocation() {
         if (!this.currentLocation) {
