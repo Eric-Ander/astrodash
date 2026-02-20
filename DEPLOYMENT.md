@@ -16,10 +16,38 @@ This document describes how to set up a fresh Ubuntu server, harden its security
 8. [Install Docker](#8-install-docker)
 9. [Install and Configure Nginx](#9-install-and-configure-nginx)
 10. [SSL Certificate (Let's Encrypt)](#10-ssl-certificate-lets-encrypt)
-11. [Deploy the Application](#11-deploy-the-application)
-12. [Promote the First Admin User](#12-promote-the-first-admin-user)
-13. [Updating the Application](#13-updating-the-application)
-14. [Security Checklist](#14-security-checklist)
+11. [Deploy Staging Environment](#11-deploy-staging-environment)
+12. [Deploy Production Environment](#12-deploy-production-environment)
+13. [Promote the First Admin User](#13-promote-the-first-admin-user)
+14. [Updating Staging and Production](#14-updating-staging-and-production)
+15. [Security Checklist](#15-security-checklist)
+
+---
+
+## Architecture Overview
+
+AstroDashboard supports running **staging** and **production** environments on the same server:
+
+```
+                    ┌─────────────────────────────────────┐
+                    │              Nginx                  │
+                    │  staging.yourdomain.com → port 3001 │
+                    │  www.yourdomain.com     → port 3002 │
+                    └─────────────────────────────────────┘
+                              │              │
+              ┌───────────────┘              └───────────────┐
+              ▼                                              ▼
+    ┌──────────────────┐                        ┌──────────────────┐
+    │ astrodash-staging │                        │ astrodash-prod   │
+    │ Container :3001   │                        │ Container :3002  │
+    │ ~/astrodash-staging│                       │ ~/astrodash-prod │
+    └──────────────────┘                        └──────────────────┘
+```
+
+| Environment | Domain | Port | Directory | Container | Branch |
+|-------------|--------|------|-----------|-----------|--------|
+| Staging | staging.yourdomain.com | 3001 | ~/astrodash-staging | astrodash-staging | feature branches |
+| Production | www.yourdomain.com | 3002 | ~/astrodash-prod | astrodash-prod | main |
 
 ---
 
@@ -298,7 +326,7 @@ Certificates renew automatically every 90 days.
 
 ---
 
-## 11. Deploy the Application
+## 11. Deploy Staging Environment
 
 ### Clone the Repository
 
@@ -306,7 +334,7 @@ Certificates renew automatically every 90 days.
 cd ~
 git clone <your-repo-url> astrodash-staging
 cd astrodash-staging
-git checkout claude/plan-next-steps-ZqKma
+git checkout main
 ```
 
 ### Create the Environment File
@@ -331,7 +359,13 @@ openssl rand -base64 48
 
 Copy the output and use it as the value for `JWT_SECRET`.
 
-### Start the Application
+### Create Data Directory
+
+```bash
+mkdir -p backend/data/staging
+```
+
+### Start the Staging Container
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d --build
@@ -353,9 +387,126 @@ Visit `https://staging.yourdomain.com` in your browser.
 
 ---
 
-## 12. Promote the First Admin User
+## 12. Deploy Production Environment
 
-After creating your account through the web interface, run this to grant admin privileges:
+Production runs alongside staging on the same server but with a separate directory, container, database, and domain.
+
+### Clone the Repository for Production
+
+```bash
+cd ~
+git clone <your-repo-url> astrodash-prod
+cd astrodash-prod
+git checkout main
+```
+
+### Create the Production Environment File
+
+```bash
+nano .env
+```
+
+Add:
+
+```env
+NODE_ENV=production
+OPENWEATHER_API_KEY=your_openweathermap_api_key
+JWT_SECRET=your_production_jwt_secret
+```
+
+> **Important:** Use a **different** JWT secret for production than staging.
+
+Generate a new secret:
+
+```bash
+openssl rand -base64 48
+```
+
+### Create Data Directory
+
+```bash
+mkdir -p backend/data/production
+```
+
+### Start the Production Container
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+### Create Nginx Config for Production
+
+```bash
+sudo nano /etc/nginx/sites-available/astrodash-prod
+```
+
+Paste:
+
+```nginx
+server {
+    listen 80;
+    server_name www.yourdomain.com yourdomain.com;
+
+    server_tokens off;
+
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+
+    location / {
+        limit_req zone=api burst=20 nodelay;
+
+        proxy_pass http://127.0.0.1:3002;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 90;
+    }
+}
+```
+
+Enable the site:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/astrodash-prod /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+### SSL Certificate for Production
+
+```bash
+sudo certbot --nginx -d www.yourdomain.com -d yourdomain.com
+```
+
+### Verify Production
+
+```bash
+docker ps
+```
+
+You should see both containers running:
+
+```
+astrodash-staging  ... 0.0.0.0:3001->3000/tcp
+astrodash-prod     ... 0.0.0.0:3002->3000/tcp
+```
+
+Visit `https://www.yourdomain.com` to verify.
+
+---
+
+## 13. Promote the First Admin User
+
+After creating your account through the web interface, run this to grant admin privileges.
+
+### For Staging
 
 ```bash
 docker exec -it astrodash-staging node -e "
@@ -366,23 +517,110 @@ console.log('Result:', user);
 "
 ```
 
+### For Production
+
+```bash
+docker exec -it astrodash-prod node -e "
+const db = require('./src/config/database');
+db.prepare('UPDATE users SET is_admin = 1 WHERE email = ?').run('your@email.com');
+const user = db.prepare('SELECT email, is_admin FROM users WHERE email = ?').get('your@email.com');
+console.log('Result:', user);
+"
+```
+
 Log out and back in to the application. The **User Management** option will appear in your user menu.
+
+> **Note:** Staging and production have separate databases. You need to create accounts and promote admins separately in each environment.
 
 ---
 
-## 13. Updating the Application
+## 14. Updating Staging and Production
 
-To deploy new code from the repository:
+### Development Workflow
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│  Feature    │ ──► │   Staging   │ ──► │ Production  │
+│  Branch     │     │   (test)    │     │   (live)    │
+└─────────────┘     └─────────────┘     └─────────────┘
+```
+
+1. Develop and test on a **feature branch**
+2. Deploy to **staging** for testing
+3. Merge to **main** when ready
+4. Deploy to **production**
+
+### Update Staging
 
 ```bash
 cd ~/astrodash-staging
-git pull origin claude/plan-next-steps-ZqKma
+git pull origin main
 docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d --build
+```
+
+Or to test a feature branch:
+
+```bash
+cd ~/astrodash-staging
+git fetch origin
+git checkout your-feature-branch
+git pull origin your-feature-branch
+docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d --build
+```
+
+### Merge Feature Branch to Main
+
+After testing on staging:
+
+```bash
+cd ~/astrodash-staging
+git checkout main
+git pull origin main
+git merge your-feature-branch
+git push origin main
+```
+
+### Update Production
+
+Only deploy to production from the `main` branch:
+
+```bash
+cd ~/astrodash-prod
+git pull origin main
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+### Quick Reference Commands
+
+**Deploy to staging (one-liner):**
+
+```bash
+cd ~/astrodash-staging && git pull origin main && docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d --build
+```
+
+**Deploy to production (one-liner):**
+
+```bash
+cd ~/astrodash-prod && git pull origin main && docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+### View Logs
+
+**Staging:**
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.staging.yml logs --tail=50 -f
+```
+
+**Production:**
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --tail=50 -f
 ```
 
 ---
 
-## 14. Security Checklist
+## 15. Security Checklist
 
 Run these commands to verify your setup:
 
