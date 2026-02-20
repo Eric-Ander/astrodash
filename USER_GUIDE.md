@@ -13,7 +13,11 @@ AstroDashboard is an astronomical weather forecasting platform for stargazers. I
    - [Hourly Forecast](#hourly-forecast-card)
    - [Light Pollution](#light-pollution-card)
    - [Astronomical Events](#astronomical-events-card)
-3. [Understanding the Astronomy Score](#3-understanding-the-astronomy-score)
+3. [Understanding the Scores](#3-understanding-the-scores)
+   - [Astronomy Score (Weather-Based)](#31-astronomy-score-weather-based)
+   - [Light Pollution – Bortle Scale](#32-light-pollution--bortle-scale)
+   - [Moon Visibility Impact](#33-moon-visibility-impact)
+   - [How the Scores Work Together](#34-how-the-scores-work-together)
 4. [User Accounts](#4-user-accounts)
 5. [Saved Locations](#5-saved-locations)
 6. [Notifications](#6-notifications)
@@ -173,18 +177,218 @@ Major showers included: Perseids, Geminids, Quadrantids, Lyrids, Eta Aquarids, D
 
 ---
 
-## 3. Understanding the Astronomy Score
+## 3. Understanding the Scores
 
-The astronomy score (0–100) is calculated for each hour of the night using four weather factors:
+AstroDashboard uses three independent scoring systems to help you evaluate observation conditions. Each measures a different aspect of sky quality.
 
-| Factor | Weight | Best value |
-|--------|--------|------------|
-| Cloud Coverage | 50% | 0% clouds |
-| Visibility | 20% | 10+ km |
-| Humidity | 15% | Under 50% |
-| Precipitation Probability | 15% | 0% chance |
+---
 
-A score of **90 or above** means excellent conditions. A score **below 30** means observation is not practical.
+### 3.1 Astronomy Score (Weather-Based)
+
+The astronomy score (0–100) is calculated for each hour of the night. It reflects how suitable the weather conditions are for stargazing.
+
+#### Formula
+
+```
+Total Score = (Cloud Score × 0.50) + (Visibility Score × 0.20) +
+              (Humidity Score × 0.15) + (Precipitation Score × 0.15)
+```
+
+#### Component Breakdown
+
+**Cloud Score (50% of total)**
+
+Clouds are the most important factor. Clear skies are essential for observation.
+
+| Cloud Coverage | Points (out of 50) |
+|----------------|-------------------|
+| 0% | 50 (perfect) |
+| 20% | 40 |
+| 50% | 25 |
+| 80% | 10 |
+| 100% | 0 (overcast) |
+
+Formula: `50 × (1 - cloud_percentage / 100)`
+
+**Visibility Score (20% of total)**
+
+Atmospheric visibility affects how crisp stars appear. Haze, fog, and dust reduce visibility.
+
+| Visibility | Points (out of 20) |
+|------------|-------------------|
+| 10 km or more | 20 (maximum) |
+| 5 km | 10 |
+| 2 km | 4 |
+| 1 km or less | 0 (poor) |
+
+Formula: For visibility between 1–10 km: `20 × (visibility_km / 10)`
+
+**Humidity Score (15% of total)**
+
+High humidity causes dew on optics and reduces atmospheric transparency.
+
+| Humidity | Points (out of 15) |
+|----------|-------------------|
+| 40% or below | 15 (optimal) |
+| 50% | 11.25 |
+| 60% | 7.5 |
+| 70% | 3.75 |
+| 80% or above | 0 (poor) |
+
+Formula: For humidity between 40–80%: `15 × (1 - (humidity - 40) / 40)`
+
+**Precipitation Score (15% of total)**
+
+Any chance of rain or snow makes observation impractical.
+
+| Rain Probability | Points (out of 15) |
+|------------------|-------------------|
+| 0% | 15 (no rain) |
+| 25% | 11.25 |
+| 50% | 7.5 |
+| 75% | 3.75 |
+| 100% | 0 (certain rain) |
+
+Formula: `15 × (1 - precipitation_probability)`
+
+#### Quality Ratings
+
+| Total Score | Rating | Colour |
+|-------------|--------|--------|
+| 90–100 | Excellent | Green |
+| 75–89 | Very Good | Yellow-green |
+| 60–74 | Good | Yellow |
+| 45–59 | Fair | Orange |
+| 30–44 | Poor | Dark orange |
+| 0–29 | Very Poor | Red |
+
+---
+
+### 3.2 Light Pollution – Bortle Scale
+
+The Bortle Dark-Sky Scale (Class 1–9) estimates how dark the sky is at your location based on nearby population centres. Unlike the astronomy score, this does not change with weather – it reflects the permanent light pollution at your site.
+
+#### How It Is Calculated
+
+AstroDashboard uses a variant of **Walker's Law** to estimate cumulative sky brightness:
+
+1. All cities within **300 km** of your location are considered.
+2. For each city, a brightness contribution is calculated:
+
+```
+Contribution = Population / (Distance + 5)^2.5
+```
+
+Where:
+- **Population** is the city's population
+- **Distance** is the great-circle distance in kilometres
+- **5 km buffer** accounts for urban sprawl (prevents extreme values at city centres)
+- **Exponent 2.5** models how light pollution falls off with distance
+
+3. All contributions are summed to give a **cumulative brightness value**.
+
+4. This value is mapped to a Bortle class:
+
+| Cumulative Brightness | Bortle Class | Sky Quality |
+|-----------------------|--------------|-------------|
+| > 50,000 | 9 | Inner city |
+| 15,001 – 50,000 | 8 | City sky |
+| 5,001 – 15,000 | 7 | Suburban/urban transition |
+| 1,501 – 5,000 | 6 | Bright suburban |
+| 401 – 1,500 | 5 | Suburban |
+| 81 – 400 | 4 | Rural/suburban transition |
+| 11 – 80 | 3 | Rural |
+| 2 – 10 | 2 | Typical dark sky |
+| < 2 | 1 | Excellent dark sky |
+
+#### Limiting Magnitude
+
+Each Bortle class corresponds to a **limiting magnitude** – the faintest star visible to the naked eye under those conditions:
+
+| Bortle Class | Limiting Magnitude | What You Can See |
+|--------------|-------------------|------------------|
+| 1 | 7.6 – 8.0 | Zodiacal light, gegenschein, Milky Way casts shadows |
+| 2 | 7.1 – 7.5 | Faint zodiacal bands, M33 visible to naked eye |
+| 3 | 6.6 – 7.0 | Milky Way appears complex, M31 obvious |
+| 4 | 6.1 – 6.5 | Milky Way visible but lacks detail |
+| 5 | 5.6 – 6.0 | Milky Way washed out, only brightest parts visible |
+| 6 | 5.1 – 5.5 | Milky Way only visible at zenith |
+| 7 | 4.6 – 5.0 | Milky Way invisible, M31 barely visible |
+| 8 | 4.1 – 4.5 | Only bright constellations recognisable |
+| 9 | < 4.0 | Only the moon and a few bright stars visible |
+
+#### Example Calculations
+
+| Location | Approx. Brightness | Bortle Class |
+|----------|-------------------|--------------|
+| Central London | ~170,000 | 9 |
+| Zurich city centre | ~8,000 | 7 |
+| Basel city centre | ~3,200 | 6 |
+| Rural area 60 km from a city | ~100 | 4 |
+| Remote mountain 200 km from cities | < 2 | 1–2 |
+
+---
+
+### 3.3 Moon Visibility Impact
+
+The moon's brightness can wash out faint objects. AstroDashboard calculates moon illumination and rates its impact on observation conditions.
+
+#### Moon Phase Calculation
+
+The moon follows a **29.53-day cycle** (synodic month). Illumination is calculated using a sinusoidal model:
+
+```
+Illumination = ((1 - cos(2π × phase_fraction)) / 2) × 100%
+```
+
+Where `phase_fraction` = days since last new moon ÷ 29.53
+
+| Phase | Days Since New Moon | Illumination |
+|-------|---------------------|--------------|
+| New Moon | 0 | 0% |
+| Waxing Crescent | 1.8 – 5.5 | 1% – 25% |
+| First Quarter | 5.5 – 9.2 | 25% – 50% |
+| Waxing Gibbous | 9.2 – 12.9 | 50% – 75% |
+| Full Moon | 12.9 – 16.6 | 75% – 100% |
+| Waning Gibbous | 16.6 – 20.3 | 75% – 50% |
+| Last Quarter | 20.3 – 24.0 | 50% – 25% |
+| Waning Crescent | 24.0 – 27.7 | 25% – 1% |
+
+#### Visibility Impact Rating
+
+| Illumination | Impact Rating | Effect on Deep-Sky Observation |
+|--------------|---------------|--------------------------------|
+| < 10% | Excellent | Minimal interference – ideal for faint objects |
+| 10% – 29% | Very Good | Low interference – most objects visible |
+| 30% – 49% | Good | Moderate interference – avoid faint nebulae |
+| 50% – 69% | Fair | Significant interference – stick to bright objects |
+| 70% – 89% | Poor | Severe interference – only planets and bright stars |
+| ≥ 90% | Very Poor | Maximum interference – observation very limited |
+
+#### Planning Around the Moon
+
+- **Best nights:** Within 5 days of new moon (illumination < 25%)
+- **Acceptable nights:** First/last quarter (illumination ~50%) – observe before moonrise or after moonset
+- **Challenging nights:** Within 5 days of full moon (illumination > 75%)
+
+**Tip:** Even during a full moon, bright planets (Jupiter, Saturn, Mars, Venus) and double stars remain excellent targets.
+
+---
+
+### 3.4 How the Scores Work Together
+
+The three scores measure different things and are displayed independently:
+
+| Score | What It Measures | Changes With |
+|-------|------------------|--------------|
+| Astronomy Score | Weather conditions | Hour by hour |
+| Bortle Class | Light pollution | Location only |
+| Moon Impact | Lunar interference | Date (moon phase) |
+
+**For the best observation session, look for:**
+- Astronomy score **75 or above** (clear, dry, good visibility)
+- Bortle class **4 or lower** (rural or darker)
+- Moon illumination **below 30%** (near new moon)
 
 ---
 
