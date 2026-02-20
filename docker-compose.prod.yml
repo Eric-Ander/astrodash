@@ -1,0 +1,20 @@
+version: '3.8'
+
+# Production environment overrides
+# Use with: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  astroweather:
+    container_name: astrodash-prod
+    ports: !override
+      - "3002:3000"  # Production runs on port 3002
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_PATH=/app/data/astrodash.db
+      - ENABLE_DEBUG=false
+    volumes:
+      - ./backend/data/production:/app/data  # Separate production database
+      - ./frontend/public:/app/frontend/public:ro
+      - ./cards:/app/cards:ro
+    restart: unless-stopped
