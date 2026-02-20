@@ -6,15 +6,35 @@
     <meta name="description" content="AstroDashboard - Astronomical weather forecasting for stargazers">
     <title>AstroDashboard - Tonight's Sky Forecast</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="apple-touch-icon" href="/favicon.svg">
-
-    <!-- Swap favicon for staging environment -->
+    <!-- Favicon with dynamic PNG fallback for Edge/IE -->
+    <link rel="icon" id="favicon" type="image/svg+xml" href="/favicon.svg">
     <script>
-      if (window.location.hostname.includes('staging')) {
-        document.querySelector('link[rel="icon"]').href = '/favicon-staging.svg';
-      }
+      (function() {
+        var isStaging = window.location.hostname.includes('staging');
+        var svgPath = isStaging ? '/favicon-staging.svg' : '/favicon.svg';
+
+        // Update SVG link for staging
+        document.getElementById('favicon').href = svgPath;
+
+        // Generate PNG fallback via canvas for browsers that don't support SVG favicons
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          canvas.width = 32;
+          canvas.height = 32;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, 32, 32);
+
+          var pngLink = document.createElement('link');
+          pngLink.rel = 'icon';
+          pngLink.type = 'image/png';
+          pngLink.sizes = '32x32';
+          pngLink.href = canvas.toDataURL('image/png');
+          document.head.insertBefore(pngLink, document.getElementById('favicon'));
+        };
+        img.src = svgPath;
+      })();
     </script>
 
     <link rel="stylesheet" href="/css/styles.css">
