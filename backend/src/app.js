@@ -20,8 +20,21 @@ const PORT = process.env.PORT || 3000;
 initializeScheduler();
 
 // Security middleware
+// Note: Most security headers are set by nginx reverse proxy
+// We disable them here to avoid duplicates
 app.use(helmet({
-  contentSecurityPolicy: false // Disable for development, configure properly in production
+  contentSecurityPolicy: false, // Handled by nginx
+  xFrameOptions: false,         // Handled by nginx
+  xContentTypeOptions: false,   // Handled by nginx
+  referrerPolicy: false,        // Handled by nginx
+  crossOriginOpenerPolicy: false,
+  crossOriginResourcePolicy: false,
+  originAgentCluster: false,
+  dnsPrefetchControl: true,     // Keep this one
+  ieNoOpen: true,               // Keep this one
+  noSniff: false,               // Handled by nginx
+  permittedCrossDomainPolicies: true,
+  xssFilter: true               // Keep this one (legacy)
 }));
 
 // Enable CORS
