@@ -119,6 +119,131 @@ const initDb = () => {
     ON user_card_preferences(user_id, enabled)
   `);
 
+  // ── AI Assistant tables ──────────────────────────────────────────────────
+
+  // User AI profile – experience level, preferred targets, observer notes
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS user_ai_profiles (
+      user_id          INTEGER PRIMARY KEY,
+      experience_level TEXT    DEFAULT 'beginner',
+      preferred_targets TEXT   DEFAULT '[]',
+      observer_notes   TEXT    DEFAULT '',
+      updated_at       DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Telescopes (multiple per user)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS user_telescopes (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id         INTEGER NOT NULL,
+      nickname        TEXT,
+      type            TEXT,
+      aperture_mm     INTEGER,
+      focal_length_mm INTEGER,
+      f_ratio         REAL,
+      notes           TEXT,
+      is_default      INTEGER DEFAULT 0,
+      created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Cameras (multiple per user)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS user_cameras (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id          INTEGER NOT NULL,
+      nickname         TEXT,
+      type             TEXT,
+      sensor_width_mm  REAL,
+      sensor_height_mm REAL,
+      pixel_size_um    REAL,
+      is_color         INTEGER DEFAULT 1,
+      is_default       INTEGER DEFAULT 0,
+      created_at       DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Mounts (multiple per user)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS user_mounts (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id      INTEGER NOT NULL,
+      nickname     TEXT,
+      type         TEXT,
+      has_tracking INTEGER DEFAULT 0,
+      has_guiding  INTEGER DEFAULT 0,
+      is_default   INTEGER DEFAULT 0,
+      created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Named setups – a combination of telescope + camera + mount
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS user_setups (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id      INTEGER NOT NULL,
+      nickname     TEXT    NOT NULL,
+      telescope_id INTEGER,
+      camera_id    INTEGER,
+      mount_id     INTEGER,
+      is_default   INTEGER DEFAULT 0,
+      created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id)      REFERENCES users(id)           ON DELETE CASCADE,
+      FOREIGN KEY (telescope_id) REFERENCES user_telescopes(id) ON DELETE SET NULL,
+      FOREIGN KEY (camera_id)    REFERENCES user_cameras(id)    ON DELETE SET NULL,
+      FOREIGN KEY (mount_id)     REFERENCES user_mounts(id)     ON DELETE SET NULL
+    )
+  `);
+
+  // Per-session conversation summaries (cross-session memory)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS ai_conversation_summaries (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id       INTEGER NOT NULL,
+      session_date  DATE    NOT NULL,
+      summary       TEXT    NOT NULL,
+      location_used TEXT,
+      topics        TEXT    DEFAULT '[]',
+      created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Full conversation log (for future analytics / fine-tuning)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS ai_conversation_logs (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id    INTEGER,
+      session_id TEXT    NOT NULL,
+      role       TEXT    NOT NULL,
+      content    TEXT    NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Indexes for AI tables
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_user_telescopes_user
+      ON user_telescopes(user_id);
+    CREATE INDEX IF NOT EXISTS idx_user_cameras_user
+      ON user_cameras(user_id);
+    CREATE INDEX IF NOT EXISTS idx_user_mounts_user
+      ON user_mounts(user_id);
+    CREATE INDEX IF NOT EXISTS idx_user_setups_user
+      ON user_setups(user_id);
+    CREATE INDEX IF NOT EXISTS idx_ai_summaries_user
+      ON ai_conversation_summaries(user_id, session_date);
+    CREATE INDEX IF NOT EXISTS idx_ai_logs_session
+      ON ai_conversation_logs(session_id);
+    CREATE INDEX IF NOT EXISTS idx_ai_logs_user
+      ON ai_conversation_logs(user_id);
+  `);
+
   console.log('Database initialized successfully');
 };
 

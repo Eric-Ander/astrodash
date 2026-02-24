@@ -5,7 +5,8 @@ const eventsController = require('../controllers/eventsController');
 const authController = require('../controllers/authController');
 const cardPreferencesController = require('../controllers/cardPreferencesController');
 const userManagementController = require('../controllers/userManagementController');
-const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const aiController = require('../controllers/aiController');
+const { authenticateToken, optionalAuth, requireAdmin } = require('../middleware/auth');
 
 // Authentication routes
 router.post('/auth/register', authController.register.bind(authController));
@@ -45,6 +46,14 @@ router.patch('/admin/users/:id', authenticateToken, requireAdmin, userManagement
 router.delete('/admin/users/:id', authenticateToken, requireAdmin, userManagementController.deleteUser);
 router.post('/admin/users/:id/reset-password', authenticateToken, requireAdmin, userManagementController.resetPassword);
 router.post('/admin/users/:id/toggle-admin', authenticateToken, requireAdmin, userManagementController.toggleAdmin);
+
+// AI assistant routes
+// POST /api/ai/chat  – main chat endpoint (works for guests and logged-in users)
+router.post('/ai/chat',    optionalAuth,    aiController.chat.bind(aiController));
+// GET  /api/ai/profile – retrieve gear + AI profile (requires auth)
+router.get('/ai/profile',  authenticateToken, aiController.getProfile.bind(aiController));
+// GET  /api/ai/history – retrieve past conversation summaries (requires auth)
+router.get('/ai/history',  authenticateToken, aiController.getHistory.bind(aiController));
 
 // Health check
 router.get('/health', weatherController.healthCheck.bind(weatherController));
