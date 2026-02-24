@@ -119,5 +119,22 @@
     "Waning Gibbous": "Lune Gibbeuse Décroissante",
     "First Quarter": "Premier Quartier",
     "Last Quarter": "Dernier Quartier"
+  },
+  "ai": {
+    "title": "Assistant IA",
+    "welcome": "Bonjour! Je suis votre assistant IA AstroDash. Posez-moi des questions sur le ciel de ce soir, les objets du ciel profond ou votre équipement.",
+    "inputPlaceholder": "Posez une question sur le ciel...",
+    "suggest1": "🌙 Conditions ce soir",
+    "suggest1Prompt": "Quelles sont les conditions d'observation ce soir?",
+    "suggest2": "🌌 Que observer",
+    "suggest2Prompt": "Quels sont les meilleurs objets à observer ce soir?",
+    "suggest3": "📖 À propos de M31",
+    "suggest3Prompt": "Parlez-moi de la galaxie d'Andromède (M31)",
+    "suggest4": "⚙️ Sauvegarder mon équipement",
+    "suggest4Prompt": "Je veux sauvegarder les détails de mon télescope",
+    "errorGeneric": "Quelque chose s'est mal passé. Veuillez réessayer.",
+    "errorRateLimit": "L'IA est occupée en ce moment. Veuillez réessayer dans un instant.",
+    "errorUnavailable": "Le service IA n'est pas disponible. Veuillez contacter l'administrateur.",
+    "guestNotice": "Connectez-vous pour sauvegarder vos profils d'équipement et obtenir des conseils personnalisés."
   }
 }

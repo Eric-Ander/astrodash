@@ -119,5 +119,22 @@
     "Waning Gibbous": "Waning Gibbous",
     "First Quarter": "First Quarter",
     "Last Quarter": "Last Quarter"
+  },
+  "ai": {
+    "title": "AI Assistant",
+    "welcome": "Hello! I'm your AstroDash AI assistant. Ask me anything about tonight's sky, deep-sky objects, or your imaging setup.",
+    "inputPlaceholder": "Ask anything about the sky...",
+    "suggest1": "🌙 Tonight's conditions",
+    "suggest1Prompt": "What are the observing conditions like tonight?",
+    "suggest2": "🌌 What to observe",
+    "suggest2Prompt": "What are the best objects to observe tonight?",
+    "suggest3": "📖 About M31",
+    "suggest3Prompt": "Tell me about the Andromeda Galaxy (M31)",
+    "suggest4": "⚙️ Save my gear",
+    "suggest4Prompt": "I want to save my telescope details",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorRateLimit": "The AI is busy right now. Please try again in a moment.",
+    "errorUnavailable": "The AI service is not available. Please contact the administrator.",
+    "guestNotice": "Log in to save gear profiles and get personalised advice."
   }
 }

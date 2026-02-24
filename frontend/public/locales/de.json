@@ -119,5 +119,22 @@
     "Waning Gibbous": "Abnehmender Mond",
     "First Quarter": "Erstes Viertel",
     "Last Quarter": "Letztes Viertel"
+  },
+  "ai": {
+    "title": "KI-Assistent",
+    "welcome": "Hallo! Ich bin dein AstroDash KI-Assistent. Frag mich alles über den heutigen Abendhimmel, Deep-Sky-Objekte oder deine Ausrüstung.",
+    "inputPlaceholder": "Frag alles über den Himmel...",
+    "suggest1": "🌙 Heutige Bedingungen",
+    "suggest1Prompt": "Wie sind die Beobachtungsbedingungen heute Nacht?",
+    "suggest2": "🌌 Was beobachten",
+    "suggest2Prompt": "Welche Objekte sind heute Nacht am besten zu beobachten?",
+    "suggest3": "📖 Über M31",
+    "suggest3Prompt": "Erzähl mir von der Andromedagalaxie (M31)",
+    "suggest4": "⚙️ Ausrüstung speichern",
+    "suggest4Prompt": "Ich möchte meine Teleskop-Details speichern",
+    "errorGeneric": "Etwas ist schief gelaufen. Bitte versuche es erneut.",
+    "errorRateLimit": "Die KI ist gerade beschäftigt. Bitte versuche es gleich erneut.",
+    "errorUnavailable": "Der KI-Service ist nicht verfügbar. Bitte kontaktiere den Administrator.",
+    "guestNotice": "Melde dich an, um Ausrüstungsprofile zu speichern und personalisierte Empfehlungen zu erhalten."
   }
 }

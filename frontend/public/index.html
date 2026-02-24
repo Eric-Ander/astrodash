@@ -298,11 +298,49 @@
         </div>
     </div>
 
+    <!-- AI Chat Panel (slide-in from left) -->
+    <div id="aiChatPanel" class="ai-chat-panel" role="dialog" aria-label="AI Assistant" aria-modal="true">
+        <div class="ai-chat-header">
+            <div class="ai-chat-title">
+                <span class="ai-chat-title-icon">🔭</span>
+                <span data-i18n="ai.title">AI Assistant</span>
+            </div>
+            <button class="ai-chat-close" id="aiChatClose" aria-label="Close AI panel">&times;</button>
+        </div>
+        <div class="ai-chat-messages" id="aiChatMessages" aria-live="polite" aria-label="Conversation"></div>
+        <div class="ai-chat-suggestions" id="aiChatSuggestions"></div>
+        <div class="ai-chat-input-area">
+            <textarea
+                id="aiChatInput"
+                class="ai-chat-input"
+                rows="1"
+                data-i18n="[placeholder]ai.inputPlaceholder"
+                placeholder="Ask anything about the sky..."
+                aria-label="Message input"
+            ></textarea>
+            <button id="aiChatSend" class="ai-chat-send" aria-label="Send message">&#8594;</button>
+        </div>
+    </div>
+
+    <!-- AI Chat backdrop (mobile only) -->
+    <div id="aiChatBackdrop" class="ai-chat-backdrop"></div>
+
+    <!-- AI Chat trigger button (bottom-left) -->
+    <button
+        id="aiChatTrigger"
+        class="ai-chat-trigger"
+        aria-label="Open AI Assistant"
+        aria-expanded="false"
+        aria-controls="aiChatPanel"
+        title="AI Assistant"
+    >🔭</button>
+
     <script src="/js/i18n.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/auth-ui.js"></script>
     <script src="/js/admin.js"></script>
     <script src="/js/app.js"></script>
+    <script src="/js/ai-chat.js"></script>
     <!-- Card system (ES modules) -->
     <script type="module" src="/js/card-manager.js"></script>
 </body>

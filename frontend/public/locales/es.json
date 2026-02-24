@@ -119,5 +119,22 @@
     "Waning Gibbous": "Gibosa Menguante",
     "First Quarter": "Cuarto Creciente",
     "Last Quarter": "Cuarto Menguante"
+  },
+  "ai": {
+    "title": "Asistente IA",
+    "welcome": "¡Hola! Soy tu asistente IA de AstroDash. Pregúntame cualquier cosa sobre el cielo de esta noche, objetos de cielo profundo o tu equipo.",
+    "inputPlaceholder": "Pregunta sobre el cielo...",
+    "suggest1": "🌙 Condiciones esta noche",
+    "suggest1Prompt": "¿Cuáles son las condiciones de observación esta noche?",
+    "suggest2": "🌌 Qué observar",
+    "suggest2Prompt": "¿Qué objetos son los mejores para observar esta noche?",
+    "suggest3": "📖 Sobre M31",
+    "suggest3Prompt": "Cuéntame sobre la Galaxia de Andrómeda (M31)",
+    "suggest4": "⚙️ Guardar mi equipo",
+    "suggest4Prompt": "Quiero guardar los detalles de mi telescopio",
+    "errorGeneric": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "errorRateLimit": "La IA está ocupada ahora mismo. Por favor, inténtalo en un momento.",
+    "errorUnavailable": "El servicio de IA no está disponible. Por favor, contacta al administrador.",
+    "guestNotice": "Inicia sesión para guardar perfiles de equipo y obtener consejos personalizados."
   }
 }
