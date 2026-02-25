@@ -76,14 +76,14 @@ class AIController {
         { role: 'user', content: trimmed }
       ];
 
-      // ── Log the incoming user message (fire-and-forget) ─────────────────────
-      aiService.logMessage(userId, sessionId, 'user', trimmed).catch(() => {});
+      // ── Log the incoming user message ────────────────────────────────────────
+      aiService.logMessage(userId, sessionId, 'user', trimmed);
 
       // ── Call the AI service ─────────────────────────────────────────────────
       const result = await aiService.chat(userId, messages, location || null, sessionId);
 
-      // ── Log the assistant reply (fire-and-forget) ───────────────────────────
-      aiService.logMessage(userId, sessionId, 'assistant', result.text).catch(() => {});
+      // ── Log the assistant reply ───────────────────────────────────────────────
+      aiService.logMessage(userId, sessionId, 'assistant', result.text);
 
       // ── Return the response ─────────────────────────────────────────────────
       return res.json({
