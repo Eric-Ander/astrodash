@@ -194,7 +194,10 @@ class AstroWeather {
             // Store resolved coordinates
             this.currentLat = data.location.coordinates.lat;
             this.currentLon = data.location.coordinates.lon;
-            this.currentLocationName = data.location.name;
+            // Prefer the name from geocoding search (this.currentCity) over the
+            // reverse-geocoded name from the weather API, which may return a
+            // nearby larger town instead of the exact location the user selected.
+            this.currentLocationName = this.currentCity || data.location.name;
 
             // Display location info
             this.displayLocationInfo(data.location);
