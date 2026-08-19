@@ -646,8 +646,9 @@ class AstroWeather {
 
         if (!container || !nameEl || !detailsEl) return;
 
-        // Build location name
-        nameEl.textContent = location.name;
+        // Build location name - prefer the geocoding search name over the
+        // weather API's reverse-geocoded name which may return a nearby town
+        nameEl.textContent = this.currentCity || location.name;
 
         // Build details string with available info
         const details = [];
